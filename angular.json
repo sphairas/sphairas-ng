@@ -28,6 +28,9 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeng/resources/themes/nova-light/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -123,6 +126,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "sphairas-client"
+    }
+  },
+  "defaultProject": "sphairas-client",
+  "cli": {
+    "analytics": "63a06040-5395-44ec-bd7c-69f9c58e1a47"
+  }
 }
