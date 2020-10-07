@@ -1,0 +1,24 @@
+<div class="sidebar-menu">
+    <!-- <div class="sidebar-menu-search ui-fluid">
+              <p-autoComplete [(ngModel)]="searchText" [suggestions]="filteredRoutes" (completeMethod)="filterRoutes($event)"
+              (onSelect)="selectRoute($event)" placeholder="Search"></p-autoComplete>
+              <i class="pi pi-search"></i>
+      </div> -->
+
+    <div *ngFor="let cat of categories" tabindex="0">
+        <!-- <img src="assets/showcase/images/icons/input-active.svg" class="sidebar-menu-icon-active"/> -->
+        <div class="sidebar-menu-category">
+            <img src="{{cat.icon}}" class="sidebar-menu-icon-inactive" />
+            <span>{{cat.display}}</span>
+        </div>
+        <div *ngFor="let c of courses | async | categories: cat.id" routerDirection="forward" class="sidebar-menu-item">
+            <a [routerLink]="['termsheet', c.document]">{{c.display}}</a>
+            <p>{{c.document}}</p>
+            <!-- <a [routerLink]="['/inputgroup']" (click)="menuActive = false">InputGroup</a> -->
+        </div>
+    </div>
+
+    <button mat-raised-button primary (click)="logout()" color="primary">Abmelden
+    </button>
+
+</div>

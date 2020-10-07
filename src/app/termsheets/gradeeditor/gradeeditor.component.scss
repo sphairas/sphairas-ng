@@ -1,0 +1,42 @@
+@import 'theme';
+
+.table-grade-editor { 
+
+    .ui-dropdown {
+        border: none;  
+        background-color: transparent;
+        min-width: 0;
+    }
+
+    .ui-dropdown:not(.ui-state-disabled).ui-state-focus {
+        box-shadow: none;
+    }
+    
+    .ui-dropdown  .ui-dropdown-label {
+        display: inline;
+        padding-right: 0;
+    }
+
+    // .ui-dropdown .ui-dropdown-trigger {
+    //     border: 1px solid #c8c8c8;
+    //     //position: relative;
+    // }
+
+    .ui-inputtext {
+        padding: 0;
+    }
+
+    .mat-icon {
+        //display: table-cell;
+        height: 16px;
+    }
+}
+
+:host-context(td) .not-editable:active {
+    border: 2px solid mat-color($sphairas-client-warn);
+    background-color: black;
+}
+
+:host {
+    background-color: red;
+}

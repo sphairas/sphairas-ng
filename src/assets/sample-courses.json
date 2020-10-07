@@ -1,0 +1,26 @@
+{
+    "configuration": {
+        "properties": [
+            {
+                "authority": "not-listed/v1"
+            }
+        ]
+    },
+    "courses": [
+        {
+            "document": "2016-biologie-b@not-listed/v1",
+            "display": "Biologie 8b",
+            "category": "lesson"
+        },
+        {
+            "document": "klasse-2019-e",
+            "display": "Klasse 5e",
+            "category": "primary-unit"
+        },
+        {
+            "document": "2018-mathematik-a",
+            "display": "Mathematik 6a",
+            "category": "lesson"
+        }
+    ]
+}

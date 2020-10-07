@@ -1,0 +1,33 @@
+@import 'theme';
+
+main {
+    width: 100%; 
+    height: 100%;
+    background-color: mat-color($sphairas-client-primary, default);
+    // color: mat-color($sphairas-client-primary, default-contrast);
+
+    // div.mat-display-2 {
+    //     color: mat-color($sphairas-client-primary);
+    // }
+}
+
+#urlinput {
+    
+    span {
+        padding-inline-start: var(--padding-start);
+    }
+    
+    input {
+        --padding-start: 0;
+    }
+}
+
+.centered {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    /* bring your own prefixes */
+    transform: translate(-50%, -50%);
+
+    //color: mat-color($sphairas-client-accent, 100); 
+}

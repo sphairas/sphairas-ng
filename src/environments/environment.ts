@@ -3,7 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  login_server: "http://localhost:48080",
+  login_key: "DO-NOT-USE-IN-PRODUCTION"
 };
 
 /*

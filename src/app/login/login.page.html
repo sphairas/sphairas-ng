@@ -1,0 +1,36 @@
+<main class="mat-app-background ">
+    <div class="mat-display-2">
+        <span>An einem sphairas-Server anmelden</span>
+    </div>
+
+    <div *ngIf="!serverName" class="centered">
+        <span>https://</span>
+        <mat-form-field appearance="standard">
+            <!-- <mat-label>Servername:</mat-label> -->
+            <input matInput type="url" placeholder="example.sphairas.de" [formControl]="serverNameForm">
+            <!-- <mat-hint>Hint</mat-hint> -->
+        </mat-form-field>
+        <br>
+        <button mat-raised-button primary (click)="proceed()" [disabled]="!serverNameForm.valid" color="primary">Weiter
+        </button>
+        <br>
+    </div>
+
+    <div *ngIf="serverName" class="centered">
+        <form [formGroup]="passwordForm">
+            <mat-form-field appearance="standard">
+                <mat-label>Benutzername:</mat-label>
+                <input matInput formControlName="account">
+            </mat-form-field>
+            <br>
+            <mat-form-field appearance="standard">
+                <mat-label>Passwort:</mat-label>
+                <input matInput type="password" formControlName="password">
+            </mat-form-field>
+            <br>
+            <button mat-raised-button primary (click)="login()" [disabled]="!passwordForm.valid"
+                color="primary">Anmelden
+            </button>
+        </form>`
+    </div>
+</main>

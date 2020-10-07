@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+   width="256px"
+   height="256px"
+   viewBox="0 0 256 256"
+   version="1.1"
+   id="SVGRoot">
+  <defs id="defs22729" />
+  <g id="layer1">
+    <path
+       style="fill:#fff3e6;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+       d="M 17.482517,133.27273 62.237762,79.776224 C 69.779035,185.70718 148.4026,177.74196 184.96504,170.33566 141.72191,194.50424 73.884816,211.10325 17.482517,133.27273 Z"
+       id="path27238" />
+    <path
+       style="fill:#fff3e6;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:1"
+       d="m 127.27273,163.69231 c 40.10088,8.16219 92.79362,-7.51782 103.84615,-23.07692 L 198.6014,89.216783 c -9.695,30.233017 -22.84182,62.664287 -71.32867,74.475527 z"
+       id="path27240" />
+  </g>
+</svg>

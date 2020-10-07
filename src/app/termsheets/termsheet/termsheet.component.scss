@@ -1,0 +1,50 @@
+.content-section {
+	display: block;
+	padding: 30px;
+	overflow: hidden;
+    background-color: #f5f7f8;
+	&:first-of-type {
+		>div {
+			>span {
+				line-height: 1.5em;
+				&:last-child {
+					font-size: 16px;
+				}
+			}
+		}
+	}
+	h2 {
+		margin-top: 0;
+	}
+}
+.content-section.introduction {
+	// background-image: linear-gradient(to left, #2bc0ec, #1b81d7);
+	background: linear-gradient(90deg, #ffd3a7, #ffedda);
+	color: #ffffff;
+	a {
+		color: #ffffff;
+		font-weight: 700;
+    }
+}
+.feature-title {
+	font-size: 30px;
+	margin-bottom: 20px;
+	display: block;
+}
+
+th .th-vertical {
+	transform: rotate(180deg);
+	-ms-writing-mode: tb-rl;
+	-webkit-writing-mode: vertical-rl;
+	writing-mode: vertical-rl;
+	white-space: nowrap;
+}
+
+.ui-table-scrollable-body {
+	overflow: visible;
+}
+
+.sub-header {
+	font-size: x-small; 
+	font-weight: normal;
+}

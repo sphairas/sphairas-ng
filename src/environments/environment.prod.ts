@@ -1,3 +1,5 @@
 export const environment = {
-  production: true
+  production: true,
+  login_key: "",
+  login_server: undefined
 };

@@ -1,0 +1,118 @@
+@charset "UTF-8";
+
+// import global variables
+@import 'constants';
+
+// VARIABLES
+$hamburgerShownMargin: 0 8px 0 0;
+$hamburgerHiddenMargin: 0 16px 0 -64px;
+
+// DOCS PAGE / STANDARD: TOPNAV TOOLBAR FIXED
+mat-toolbar.mat-toolbar {
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	z-index: 10;
+	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+
+	mat-toolbar-row {
+		padding: 0 16px 0 0;
+	}
+
+	mat-icon {
+		color: $white;
+	}
+	
+}
+ 
+.sidenav-container {
+	width: 100%;
+	height: 100vh;
+}
+
+mat-sidenav-container.sidenav-container {
+	min-height: 100%;
+	height: auto !important;
+	max-width: 100%;
+	margin: 0;
+	transform: none;
+
+	// &.has-floating-toc {
+	//   max-width: 82%;
+	// }
+}
+  
+.sidenav-content {
+	min-height: 100vh;
+	padding: 80px 3rem 2rem;
+  
+	@media screen and (max-width: 600px) {
+	  min-height: 450px;
+	  padding: 80px 2rem 1rem;
+	}
+  
+	@media screen and (max-width: 480px) {
+	  padding: 80px 1rem 1rem;
+	}
+  
+	// button {
+	//   min-width: 24px;
+	// }
+}
+
+mat-sidenav.mat-sidenav.sidenav {
+	position: fixed;
+	top: 64px;
+	bottom: 0;
+	left: 0;
+	padding: 0;
+	min-width: 260px;
+	background-color: $white;
+	box-shadow: 6px 0 6px rgba(0,0,0,0.10);
+
+	&.collapsed {
+		top: 56px;
+	}
+}
+
+mat-sidenav-container.sidenav-container.mat-drawer-container.mat-sidenav-container,
+mat-sidenav-container .sidenav-content {
+  background-color: $white;
+}
+
+mat-sidenav-container div.mat-sidenav-content {
+  height: auto;
+}
+
+// HAMBURGER BUTTON
+.hamburger.mat-button {
+	height: 100%;
+	margin: $hamburgerShownMargin;
+	padding: 0;
+  
+	@media (min-width: 992px) {
+	  // Hamburger hidden by default on large screens.
+	  // (Will be shown per doc.)
+	  margin: $hamburgerHiddenMargin;
+	}
+  
+	@media (max-width: 480px) {
+	  min-width: 15%;
+	}
+  
+	&:not(.starting) {
+	  transition-duration: 0.4s;
+	  transition-property: color, margin;
+	  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+	}
+  
+	&:hover {
+	  color: $offwhite;
+	}
+  
+	& .mat-icon {
+	  color: $white;
+	  position: inherit;
+	}
+}

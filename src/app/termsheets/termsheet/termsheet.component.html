@@ -1,0 +1,52 @@
+<div class="content-section introduction">
+    <div>
+        <span class="feature-title">TreeTable</span>
+        <span>Columns can be grouped using rowspan and colspan properties.</span>
+    </div>
+</div>
+
+<div class="page-content" style="height: calc(90vh - 10px)">
+    <p-table #recTable [columns]="reccols" [scrollable]="true" scrollHeight="flex" [value]="recdata">
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex">
+                <button type="button" pButton pRipple icon="pi pi-file-o" (click)="recTable.exportCSV()" class="p-mr-2" pTooltip="CSV" tooltipPosition="bottom"></button>
+                <!-- <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()" class="p-button-success p-mr-2"  pTooltip="XLS" tooltipPosition="bottom"></button> -->
+                <!-- <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()" class="p-button-warning p-mr-2" pTooltip="PDF" tooltipPosition="bottom"></button> -->
+                <button type="button" pButton pRipple icon="pi pi-filter" (click)="recTable.exportCSV({selectionOnly:true})" class="p-button-info p-ml-auto" pTooltip="Selection Only" tooltipPosition="bottom"></button>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="colgroup">
+            <colgroup>
+                <col style="width: 200px;" />
+            </colgroup>
+            <colgroup>
+                <col *ngFor="let col of reccols" style="width: 60px;" />
+            </colgroup>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="text-align: start;">Student</th>
+                <th *ngFor="let col of reccols" style="padding-top: 0.571em; overflow: visible;">
+                    <div class="th-vertical">
+                        {{col.time | amDateFormat: 'dd D. MMM'}}
+                        <br>
+                        <span *ngIf="col.period" class="sub-header">{{col.period}}. Stunde</span>
+                        <span *ngIf="!col.period" class="sub-header">um {{col.time | amDateFormat: 'h:mm'}}</span>
+                    </div>
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row>
+            <tr>
+                <td>{{row.fullname}}</td>
+                <td pEditableColumn *ngFor="let col of reccols" style="text-align: center; vertical-align: middle;">
+                    <!-- {{rec[col.field]?.id | displayGrade}} -->
+                    <grade-editor [value]="row[col.field]" (valueChange)="gradeChange(col.id, row.student, $event)">
+                    </grade-editor>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<div style="margin-bottom: 500px;">
+</div>
