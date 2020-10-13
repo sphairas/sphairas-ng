@@ -3,6 +3,7 @@ import { LessonsService } from 'src/app/lessons.service';
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth.service';
+import { BaseTargetDocument } from '../base-target-document';
 
 export const categories: any[] = [
   {
@@ -24,15 +25,16 @@ export const categories: any[] = [
 })
 export class CoursesMenuComponent implements OnInit {
 
-  courses: Observable<any>;
+  lessons: Observable<BaseTargetDocument[]>;
   categories: any[];
 
-  constructor(private unitsService: LessonsService, private router: Router, private authService: AuthService) {
-    this.courses = this.unitsService.getCourses();
+  constructor(private service: LessonsService, private router: Router, private authService: AuthService) {
+    this.lessons = this.service.getCourses();
     this.categories = categories;
   }
 
   ngOnInit(): void {
+    this.service.getCourses();
   }
 
   logout() {

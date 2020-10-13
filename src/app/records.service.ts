@@ -3,6 +3,8 @@ import { PouchDBService } from './pouchdb.service';
 import { Observable, Subject } from 'rxjs';
 import * as moment from 'moment';
 import { GradeValue } from './termsheets/gradevalue';
+import { Moment } from 'moment';
+import { ConventionsService } from './conventions.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,7 @@ export class RecordsService {
   }
 
   private async unit(unit: string): Promise<any[]> {//, start: Moment = utc().startOf('day').subtract(14, 'days'), end: Moment = utc().endOf('day').add(5, 'days')) {
-    let s = '202009010000'; //start.format('YYYYMMDDHHmm');
+    let s = '202008010000'; //start.format('YYYYMMDDHHmm');
     let e = '202010120000'; //end.format('YYYYMMDDHHmm');
     //startkey, endkey will skip 'doc:' and 'cfg:'
     let options = {
@@ -58,7 +60,7 @@ export class RecordsService {
       .catch(err => console.log(err));
   }
 
-  recordsView(unit: string): Observable<{columns: any, rows: any}> {
+  recordsView(unit: string): Observable<{ columns: any, rows: any }> {
     let ret: Subject<any> = new Subject();
     let reload = () => {
       let records = this.unit(unit);
@@ -105,7 +107,76 @@ export class RecordsService {
     }
     this.db.eventHandler.subscribe(e => {
       //if (e.type === 'change' && e.docs.find(doc => doc._id === ????)) {  //check time, not unit
-        reload();
+      reload();
+      //}
+    });
+    reload();
+    return ret;
+  }
+
+  recordsView2(unit: string): Observable<{ columns: any, rows: any }> {
+    let ret: Subject<any> = new Subject();
+    let reload = () => {
+      let records = this.unit(unit);
+      let students = this.students(unit);
+      Promise.all([students, records])
+        .then(([unitdata, recs]: [any, any[]]) => {
+          let columns: any[] = unitdata.students.map(s => { return { field: s.id, id: s.id, name: s.name } });
+          columns.sort((r1, r2) => r1.name.localeCompare(r2.name));
+          //let columns = recs.map(c => { return { field: c.time, id: c.id, period: c.period, time: moment(c.time, 'YYYYMMDDhhmm') } });
+          let rows: any[] = recs.map(rrow => {
+            let map = [];
+            if (rrow.records) {
+              rrow.records.forEach(sr => {
+                let sid = sr.student;
+                let g = sr.grade;
+                if (g) {
+                  if (!map[sid]) map[sid] = {};
+                  //Workaround, remove
+                  if (g.indexOf('#') === -1) {
+                    if (g === 'f' || g === 'e') {
+                      g = 'anwesenheit#' + g;
+                    } else
+                      g = ConventionsService.defaultConvention + '#' + g;
+                  }
+                  let entry: GradeValue = {
+                    id: g,
+                    editable: true,
+                    timestamp: sr.timestamp
+                  }
+                  map[sid] = entry;
+                }
+                // else {
+                //   let entry: GradeValue = {
+                //     id: 'niedersachsen.ersatzeintrag#pending',
+                //     editable: true
+                //   }
+                //   map[sid] = entry;
+                // }
+              });
+            }
+            //Workaround, remove create pending entries for all
+            unitdata.students.forEach(s => {
+              let sid = s.id;
+              if (!map[sid]) {
+                let entry: GradeValue = {
+                  id: 'niedersachsen.ersatzeintrag#pending',
+                  editable: true
+                }
+                map[sid] = entry;
+              }
+            });
+            let ret: { id: string, period: string, time: Moment, records: any[], journal?: string } = { id: rrow.id, period: rrow.period, time: moment(rrow.time, 'YYYYMMDDhhmm'), records: map };
+            if (rrow.journal) ret.journal = rrow.journal.text;
+            return ret;
+          });
+          return { columns: columns, rows: rows };
+        })
+        .then(res => ret.next(res));
+    }
+    this.db.eventHandler.subscribe(e => {
+      //if (e.type === 'change' && e.docs.find(doc => doc._id === ????)) {  //check time, not unit
+      reload();
       //}
     });
     reload();

@@ -11,11 +11,14 @@
             <img src="{{cat.icon}}" class="sidebar-menu-icon-inactive" />
             <span>{{cat.display}}</span>
         </div>
-        <div *ngFor="let c of courses | async | categories: cat.id" routerDirection="forward" class="sidebar-menu-item">
-            <a [routerLink]="['termsheet', c.document]">{{c.display}}</a>
-            <p>{{c.document}}</p>
+        <div *ngFor="let l of lessons | async | categories: cat.id" routerDirection="forward" class="sidebar-menu-item">
+            <a [routerLink]="['termsheet', l.document]">{{l.name}}</a>
+            <p>{{l.document}}</p>
             <!-- <a [routerLink]="['/inputgroup']" (click)="menuActive = false">InputGroup</a> -->
         </div>
+
+
+        <a [routerLink]="['termsheet', 'dummy']">dummy</a>
     </div>
 
     <button mat-raised-button primary (click)="logout()" color="primary">Abmelden

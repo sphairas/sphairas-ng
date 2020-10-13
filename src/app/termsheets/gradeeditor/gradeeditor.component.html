@@ -11,7 +11,7 @@
             </span>
         </ng-template>
     </p-treeTableCellEditor> -->
-<p-cellEditor *ngIf="value?.editable" class="table-grade-editor">
+<p-cellEditor *ngIf="value?.editable" class="table-grade-editor" [class]="currentItem?.style">
     <ng-template pTemplate="input">
         <!-- <p-dropdown [options]="grades" [(ngModel)]="current" appendTo="body"></p-dropdown> -->
         <!-- Append-to need to make all drop down list visible https://stackoverflow.com/questions/54346512/dropdown-values-hidden-inside-scrollable-table-header-primeng -->

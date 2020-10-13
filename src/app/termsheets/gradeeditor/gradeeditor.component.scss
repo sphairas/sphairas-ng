@@ -1,5 +1,10 @@
 @import 'theme';
 
+.accent {
+    background-color: mat-color($sphairas-client-accent);
+    display: block;
+} 
+
 .table-grade-editor { 
 
     .ui-dropdown {

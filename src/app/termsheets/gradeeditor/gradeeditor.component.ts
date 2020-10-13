@@ -6,7 +6,8 @@ import { ConventionsService } from 'src/app/conventions.service';
 export interface SelectGrade extends SelectItem {
   value: string,
   label: string,
-  icon: string
+  icon: string,
+  style: string
 }
 
 @Component({
@@ -20,7 +21,7 @@ export class GradeEditorComponent implements OnInit {
   //@Input()
   grades: SelectGrade[] = [];
   _value: GradeValue;
-  @Output() 
+  @Output()
   valueChange: EventEmitter<GradeValue> = new EventEmitter<GradeValue>();
   @Input()
   treeTable: boolean = false;
@@ -29,9 +30,11 @@ export class GradeEditorComponent implements OnInit {
     this.grades = ConventionsService.conventions.flatMap(co => {
       let n = co.name;
       return co.grades.map(go => <SelectGrade>{ 
-        value: go.id,
+        //Workaround
+        value: n + '#' + go.id,
         label: go.label,
-        icon: this.conventions.icon(go.id) 
+        icon: this.conventions.icon(go.id),
+        style: go.style
       });
     });
   }
@@ -59,8 +62,6 @@ export class GradeEditorComponent implements OnInit {
   }
 
   get currentItem(): SelectGrade {
-    let ret = this.grades.find(g => this.value && g.value === this.value.id);
-   if(ret) console.log(ret.icon)
-    return ret;
+    return this.grades.find(g => this.value && g.value === this.value.id);
   }
 }

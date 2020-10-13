@@ -40,36 +40,56 @@ export class ConventionsService {
         {
           "id": "minus-minus",
           "label": "--",
-          "icon": "minus"
+          "icon": "minus",
+          "numerical": 10.0
         },
         {
           "id": "minus",
           "label": "-",
-          "icon": "frown"
+          "icon": "frown",
+          "numerical": 30.0
         },
         {
           "id": "x",
           "label": "*",
-          "icon": "meh"
+          "icon": "meh",
+          "numerical": 40.0
         },
         {
           "id": "x-plus",
           "label": "*+",
-          "icon": "smile"
+          "icon": "smile",
+          "numerical": 55.0
         },
         {
           "id": "plus",
           "label": "+",
-          "icon": "plus"
+          "icon": "plus",
+          "numerical": 85.0
         },
         {
           "id": "plus-plus",
           "label": "++",
-          "icon": "award"
+          "icon": "award",
+          "numerical": 100.0
         }
       ],
       "name": "mitarbeit",
       "display": "Mitarbeit"
+    },
+    {
+      "grades": [
+        {
+          "id": "f",
+          "label": "f"
+        },
+        {
+          "id": "e",
+          "label": "e"
+        }
+      ],
+      "name": "anwesenheit",
+      "display": "Anwesenheit"
     },
     {
       "grades": [
@@ -93,7 +113,8 @@ export class ConventionsService {
       "grades": [
         {
           "id": "pending",
-          "label": "?"
+          "label": "?",
+          "style": "accent"
         }
       ],
       "name": "niedersachsen.ersatzeintrag",
@@ -101,7 +122,7 @@ export class ConventionsService {
     }
   ];
 
-  defaultConvention = 'mitarbeit';
+  static defaultConvention = 'mitarbeit';
 
   constructor(private matIconRegistry: MatIconRegistry, private domSanitizer: DomSanitizer) {
     this.icons.forEach(i => {
@@ -110,7 +131,7 @@ export class ConventionsService {
           "grades",
           i.name,
           this.domSanitizer.bypassSecurityTrustHtml(i.icon));
-      console.log('Registered icon for ' + i.name);
+      //console.log('Registered icon for ' + i.name);
     });
   }
 
@@ -130,6 +151,18 @@ export class ConventionsService {
     return undefined;
   }
 
+  numerical(grade: string): number {
+    if (grade) {
+      let res = this.resolve(grade);
+      let cnv = ConventionsService.conventions.find(c => c.name === res.convention);
+      if (cnv) {
+        let g = cnv.grades.find(g => g.id === res.id);
+        if (g && g.numerical) return g.numerical;
+      }
+    }
+    return undefined;
+  }
+
   icon(grade: string): string {
     if (grade) {
       let res = this.resolve(grade);
@@ -142,11 +175,11 @@ export class ConventionsService {
     return undefined;
   }
 
-  private resolve(guid: string): { convention: string, id: string } {
+  resolve(guid: string): { convention: string, id: string } {
     let i = guid.indexOf('#');
     return {
-      convention: i === -1 ? this.defaultConvention : guid.substring(i + 1),
-      id: i === -1 ? guid : guid.substring(0, i)
+      convention: i === -1 ? ConventionsService.defaultConvention : guid.substring(0, i),
+      id: i === -1 ? guid : guid.substring(i + 1)
     };
   }
 }
