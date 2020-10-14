@@ -1,11 +1,11 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { RecordsService } from 'src/app/records.service';
 import { GradeValue } from '../gradevalue';
 import { Table } from 'primeng/table';
 import { ConventionsService } from 'src/app/conventions.service';
+import { StaticSymbol } from '@angular/compiler';
 
 @Component({
   selector: 'app-termsheet',
@@ -20,6 +20,7 @@ export class TermsheetComponent implements OnInit {
   reccols: any[] = [];
   recdata2: any[] = [];
   reccols2: any[] = [];
+  statistics: { value: number }[];
   sub: Subscription;
   sub2: Subscription;
   @ViewChild('recTable') table: Table;
@@ -42,7 +43,7 @@ export class TermsheetComponent implements OnInit {
     this.sub2 = this.service.recordsView2(this.unit).subscribe(res => {
       this.reccols2 = res.columns;
       this.recdata2 = res.rows;
-      this.sdev(this.recdata2);
+      this.statistics = this.sdev(this.recdata2);
       //https://github.com/primefaces/primeng/issues/2219
       //https://github.com/primefaces/primeng/issues/2689
       //this.recdata = [...this.recdata];
@@ -54,20 +55,62 @@ export class TermsheetComponent implements OnInit {
     if (this.sub) this.sub.unsubscribe();
   }
 
-  private sdev(rows: any[]) {
-    let ret = 0.0;
+  private sdev(rows: any[]): { value: number }[] {
+    const stats = require('wink-statistics');
+    const stdev = stats.streaming.stdev();
+    let students: { sum: any, wsum: any }[] = [];
     rows.forEach(r => {
+      stdev.reset();
       for (var sid in r.records) {
         let rec = r.records[sid];
         if (rec.id) {
           let v: number = this.conventions.numerical(rec.id);
           if (v) {
-            ret += v;
+            stdev.compute(v);
+          }
+        }
+      }
+      let res = stdev.result();
+      let sd = res.stdev;
+      if (res.size !== 0 && sd !== 0) {
+        let out: string = `${r.id}: ${sd}, size: ${res.size}, mean: ${res.mean})`;
+        console.log(out);
+        //
+        for (var sid in r.records) {
+          if (!students[sid]) {
+            students[sid] = {
+              sum: stats.streaming.sum(),
+              wsum: stats.streaming.sum()
+            }
+          }
+          let rec = r.records[sid];
+          if (rec.id) {
+            let v: number = this.conventions.numerical(rec.id);
+            if (v) {
+              let sData = students[sid];
+              let weighted = v * sd;
+              sData.sum.compute(weighted);
+              sData.wsum.compute(sd);
+            }
           }
         }
       }
     });
-    console.log(ret);
+    //
+    let ret: { value: number }[] = [];
+    for (var sid in students) {
+      let sData = students[sid];
+      let sum = sData.sum.value();
+      let wsum = sData.wsum.value();
+      if (sum !== 0) {
+        ret[sid] = {
+          value: sum / wsum
+        }
+      }
+      //let out: string = `${sid}: ${result}`;
+      //console.log(out);
+    }
+    return ret;
   }
 
   gradeChange(rec: string, stud: string, val: GradeValue) {
