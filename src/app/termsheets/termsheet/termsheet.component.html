@@ -84,7 +84,7 @@
                     <span>{{row.time | amLocale: 'de' | amDateFormat: 'dd., D. MMM'}}</span>
                     <span *ngIf="row.period"> {{row.period}}. Stunde</span>
                     <span *ngIf="!row.period"> um {{row.time | amLocale: 'de' | amDateFormat: 'H:mm'}}</span>
-                    <span *ngIf="row.journal"><br>{{row.journal}}</span>
+                    <span *ngIf="row.journal" class="sub-header"><br>{{truncate(row.journal, 41)}}</span>
                 </td>
                 <td pEditableColumn *ngFor="let col of reccols2" style="text-align: center; vertical-align: middle;">
                     <!-- {{row.records[col.id]?.id}} -->

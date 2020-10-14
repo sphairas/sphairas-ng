@@ -103,4 +103,14 @@ export class TermsheetComponent implements OnInit {
           FileSaver.saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
       });
   } */
+
+  truncate(text: string, max: number) {
+    if (max <= 4 || text.length <= max) { return text; }
+    let ret: string = text.substr(0, max - 3);
+    const rgx = /\s/g;
+    rgx.test(ret);
+    let li: number = rgx.lastIndex;
+    if (li !== 0 && max - li < 8) ret = ret.substring(0, li);
+    return `${ret} …`;
+  };
 }

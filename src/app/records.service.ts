@@ -26,7 +26,7 @@ export class RecordsService {
     };
     return this.db.query('times/times-units', options)
       .then(res => {
-        return res.rows.map(r => { return { "time": r.key[1], "id": r.id, "records": r.value } });
+        return res.rows.map(r => { return { "time": r.key[1], "id": r.id, "records": r.value.records, "value": r.value } });
         // for (let i = 0; i < res.rows.length; i++) {
         //   let d = res.rows[i].doc;
         //   let k = res.rows[i].key;
@@ -126,35 +126,33 @@ export class RecordsService {
           //let columns = recs.map(c => { return { field: c.time, id: c.id, period: c.period, time: moment(c.time, 'YYYYMMDDhhmm') } });
           let rows: any[] = recs.map(rrow => {
             let map = [];
-            if (rrow.records) {
-              rrow.records.forEach(sr => {
-                let sid = sr.student;
-                let g = sr.grade;
-                if (g) {
-                  if (!map[sid]) map[sid] = {};
-                  //Workaround, remove
-                  if (g.indexOf('#') === -1) {
-                    if (g === 'f' || g === 'e') {
-                      g = 'anwesenheit#' + g;
-                    } else
-                      g = ConventionsService.defaultConvention + '#' + g;
-                  }
-                  let entry: GradeValue = {
-                    id: g,
-                    editable: true,
-                    timestamp: sr.timestamp
-                  }
-                  map[sid] = entry;
+            rrow.value.records.forEach(sr => {
+              let sid = sr.student;
+              let g = sr.grade;
+              if (g) {
+                if (!map[sid]) map[sid] = {};
+                //Workaround, remove
+                if (g.indexOf('#') === -1) {
+                  if (g === 'f' || g === 'e') {
+                    g = 'anwesenheit#' + g;
+                  } else
+                    g = ConventionsService.defaultConvention + '#' + g;
                 }
-                // else {
-                //   let entry: GradeValue = {
-                //     id: 'niedersachsen.ersatzeintrag#pending',
-                //     editable: true
-                //   }
-                //   map[sid] = entry;
-                // }
-              });
-            }
+                let entry: GradeValue = {
+                  id: g,
+                  editable: true,
+                  timestamp: sr.timestamp
+                }
+                map[sid] = entry;
+              }
+              // else {
+              //   let entry: GradeValue = {
+              //     id: 'niedersachsen.ersatzeintrag#pending',
+              //     editable: true
+              //   }
+              //   map[sid] = entry;
+              // }
+            });
             //Workaround, remove create pending entries for all
             unitdata.students.forEach(s => {
               let sid = s.id;
@@ -166,8 +164,7 @@ export class RecordsService {
                 map[sid] = entry;
               }
             });
-            let ret: { id: string, period: string, time: Moment, records: any[], journal?: string } = { id: rrow.id, period: rrow.period, time: moment(rrow.time, 'YYYYMMDDhhmm'), records: map };
-            if (rrow.journal) ret.journal = rrow.journal.text;
+            let ret: { id: string, period: number, categories: string, time: Moment, records: any[], journal: string } = { id: rrow.id, period: rrow.value.period, categories: rrow.value.categories, time: moment(rrow.time, 'YYYYMMDDhhmm'), records: map, journal: rrow.value.journal };
             return ret;
           });
           return { columns: columns, rows: rows };
