@@ -72,6 +72,10 @@ export class ConventionsService {
           "label": "++",
           "icon": "award",
           "numerical": 100.0
+        },
+        {
+          "id": "entfall",
+          "label": "---"
         }
       ],
       "name": "mitarbeit",
