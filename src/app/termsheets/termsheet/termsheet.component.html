@@ -5,8 +5,7 @@
     </div>
 </div>
 
-<!-- style="height: calc(90vh - 10px)" -->
-<div class="page-content">
+<div class="page-content" style="height: calc(50vh - 10px)">
 
     <!--     <p-table #recTable [columns]="reccols" [scrollable]="true" scrollHeight="flex" [value]="recdata">
         <ng-template pTemplate="caption">
@@ -92,6 +91,10 @@
                 </td>
                 <td *ngFor="let col of reccols2">
                     {{statistics[col.id]?.value | number: '1.2-2' || '---'}}
+                    <!-- <br>
+                    A: {{statistics[col.id]?.mean | number: '1.2-2' || '---'}} -->
+                    <br>
+                    <span style="font-size: x-small;">Anzahl: {{statistics[col.id]?.count | number: '1.2-2' || '---'}}</span>
                 </td>
             </tr>
         </ng-template>

@@ -20,7 +20,7 @@ export class TermsheetComponent implements OnInit {
   reccols: any[] = [];
   recdata2: any[] = [];
   reccols2: any[] = [];
-  statistics: { value: number }[];
+  statistics: { value: number, count: number, mean: number }[];
   sub: Subscription;
   sub2: Subscription;
   @ViewChild('recTable') table: Table;
@@ -55,10 +55,10 @@ export class TermsheetComponent implements OnInit {
     if (this.sub) this.sub.unsubscribe();
   }
 
-  private sdev(rows: any[]): { value: number }[] {
+  private sdev(rows: any[]): { value: number, count: number, mean: number }[] {
     const stats = require('wink-statistics');
     const stdev = stats.streaming.stdev();
-    let students: { sum: any, wsum: any }[] = [];
+    let students: { sum: any, wsum: any, mean: any }[] = [];
     rows.forEach(r => {
       stdev.reset();
       for (var sid in r.records) {
@@ -71,7 +71,7 @@ export class TermsheetComponent implements OnInit {
         }
       }
       let res = stdev.result();
-      let sd = res.stdev;
+      let sd = res.stdevp;
       if (res.size !== 0 && sd !== 0) {
         let out: string = `${r.id}: ${sd}, size: ${res.size}, mean: ${res.mean})`;
         console.log(out);
@@ -80,7 +80,8 @@ export class TermsheetComponent implements OnInit {
           if (!students[sid]) {
             students[sid] = {
               sum: stats.streaming.sum(),
-              wsum: stats.streaming.sum()
+              wsum: stats.streaming.sum(),
+              mean: stats.streaming.mean()
             }
           }
           let rec = r.records[sid];
@@ -91,20 +92,24 @@ export class TermsheetComponent implements OnInit {
               let weighted = v * sd;
               sData.sum.compute(weighted);
               sData.wsum.compute(sd);
+              sData.mean.compute(v);
             }
           }
         }
       }
     });
     //
-    let ret: { value: number }[] = [];
+    let ret: { value: number, count: number, mean: number  }[] = [];
     for (var sid in students) {
       let sData = students[sid];
       let sum = sData.sum.value();
       let wsum = sData.wsum.value();
+      let m = sData.mean.result();
       if (sum !== 0) {
         ret[sid] = {
-          value: sum / wsum
+          value: sum / wsum,
+          count: m.size,
+          mean: m.mean
         }
       }
       //let out: string = `${sid}: ${result}`;
