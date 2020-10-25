@@ -10,13 +10,15 @@ import { GradeEditorComponent } from './gradeeditor/gradeeditor.component';
 import { MomentModule } from 'ngx-moment';
 import { DisplayGradePipe } from './display-grade.pipe';
 import { MatIconModule } from '@angular/material/icon';
+import { ExamSheetComponent } from '../sheets/exam-sheet/exam-sheet.component';
 
 @NgModule({
   declarations: [
     TermsheetComponent,
     GradesPipe,
     GradeEditorComponent,
-    DisplayGradePipe
+    DisplayGradePipe,
+    ExamSheetComponent  
   ],
   imports: [
     CommonModule,

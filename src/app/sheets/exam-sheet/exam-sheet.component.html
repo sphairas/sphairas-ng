@@ -1,0 +1,49 @@
+
+<div class="page-content" style="height: calc(70vh - 10px)">
+
+    <p-table [scrollable]="true" scrollHeight="flex" [value]="data">
+        <ng-template pTemplate="colgroup">
+            <colgroup>
+                <col style="width: 110px;" />
+            </colgroup>
+            <colgroup>
+                <col *ngFor="let col of keys" style="width: 45px;" />
+            </colgroup> 
+            <colgroup>
+                <col style="width: 45px;" />
+            </colgroup>
+            <colgroup>
+                <col style="width: 65px;" />
+            </colgroup>
+        </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th style="text-align: start;">Name</th>
+                <th *ngFor="let col of keys" style="padding-top: 0.571em; overflow: visible;">
+                    <span>{{col.name}}</span>
+                    <br>
+                    <span style="font-size: x-small;">{{col['max-value']}}</span>
+                </th>
+                <th style="text-align: start;">Summe</th>
+                <th style="text-align: start;">Note</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row>
+            <tr>
+                <td>
+                    {{row.name}}
+                </td>
+                <td *ngFor="let col of keys" style="text-align: center; vertical-align: middle;">
+                    {{row.records[col.id]}}
+                </td>
+                <td>
+                    {{sum(row)}}
+                </td>
+                <td pEditableColumn style="text-align: center; vertical-align: middle;">
+                    <grade-editor [value]="{id: row.grade, editable: true}" (valueChange)="gradeChange(row.id, $event)">
+                    </grade-editor>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
