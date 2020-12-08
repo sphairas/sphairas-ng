@@ -1,58 +1,76 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { RecordsService } from 'src/app/records.service';
-import { GradeValue } from '../gradevalue';
 import { Table } from 'primeng/table';
+import { Observable, Subscription } from 'rxjs';
+import { filter, shareReplay, tap } from 'rxjs/operators';
 import { ConventionsService } from 'src/app/conventions.service';
-import { StaticSymbol } from '@angular/compiler';
+import { FilesService } from 'src/app/files.service';
+import { RecordsService } from 'src/app/records.service';
+import { GradeValue } from 'src/app/types/gradevalue';
+import * as _ from 'lodash';
+declare let $: any;
 
 @Component({
-  selector: 'app-termsheet',
-  templateUrl: './termsheet.component.html',
-  styleUrls: ['./termsheet.component.scss']
+  selector: 'app-records-sheet',
+  templateUrl: './records-sheet.component.html',
+  styleUrls: ['./records-sheet.component.scss']
 })
-export class TermsheetComponent implements OnInit {
+export class RecordsSheetComponent implements OnInit, AfterViewChecked {
 
-  document: string;
-  unit: string;
-  recdata: any[] = [];
-  reccols: any[] = [];
-  recdata2: any[] = [];
-  reccols2: any[] = [];
+  @Input()
+  file: string;
+  data: Observable<any>;
+  _files_doc_rev: string;
+  recsettings: { start: string, end: string; unit: string };
+  recdata: Observable<{ columns: any, rows: any }>;
   statistics: { value: number, count: number, mean: number }[];
-  sub: Subscription;
-  sub2: Subscription;
-  @ViewChild('recTable') table: Table;
 
-  constructor(private activatedRoute: ActivatedRoute, private service: RecordsService, private conventions: ConventionsService, private cdr: ChangeDetectorRef) {
+  @ViewChild('frozenHeaderRow', { read: ElementRef, static: false }) frozenHeaderRow: ElementRef;
+  @ViewChild('scrollableHeaderRow') scrollableHeaderRow: ElementRef;
+
+  constructor(private activatedRoute: ActivatedRoute, private files: FilesService, private records: RecordsService, private conventions: ConventionsService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
-    this.document = this.activatedRoute.snapshot.paramMap.get('document');
-    this.unit = 'doc:kgs-physik-abitur2022-en1';
-    /*     this.sub = this.service.recordsView(this.unit).subscribe(res => {
-          this.reccols = res.columns;
-          res.rows.sort((r1, r2) => r1.fullname.localeCompare(r2.fullname));
-          this.recdata = res.rows;
-          //https://github.com/primefaces/primeng/issues/2219
-          //https://github.com/primefaces/primeng/issues/2689
-          //this.recdata = [...this.recdata];
-          this.cdr.detectChanges();
-        }); */
-    this.sub2 = this.service.recordsView2(this.unit).subscribe(res => {
-      this.reccols2 = res.columns;
-      this.recdata2 = res.rows;
-      this.statistics = this.sdev(this.recdata2);
-      //https://github.com/primefaces/primeng/issues/2219
-      //https://github.com/primefaces/primeng/issues/2689
-      //this.recdata = [...this.recdata];
-      this.cdr.detectChanges();
-    });
+
+    if (!this.file) this.file = this.activatedRoute.snapshot.paramMap.get('file');
+    this.data = this.files.file(this.file).pipe(
+      filter(t => !this._files_doc_rev || this._files_doc_rev !== t._rev),
+      tap(t => {
+        this._files_doc_rev = t._rev;
+        let s = { start: t.start, end: t.end, unit: t.unit };
+        if (!_.isEqual(this.recsettings, s)) {
+          this.recsettings = s;
+          this.recdata = this.records.recordsView(this.recsettings).pipe(
+            tap(r => {
+              this.statistics = this.sdev(r.rows);
+            })
+          );
+          // .subscribe(res => {
+          //   this.reccols2 = res.columns;
+          //   this.recdata2 = res.rows;
+          //   this.statistics = this.sdev(this.recdata2);
+          //   //https://github.com/primefaces/primeng/issues/2219
+          //   //https://github.com/primefaces/primeng/issues/2689
+          //   //this.recdata = [...this.recdata];
+          //   this.cdr.detectChanges();
+          // });
+        }
+      }),
+      shareReplay(1)//Does the magic to update without cdr.detectChanges();
+    );
   }
 
   ngOnDestroy(): void {
-    if (this.sub) this.sub.unsubscribe();
+    //if (this.sub) this.sub.unsubscribe();
+  }
+
+
+  ngAfterViewChecked() {
+    if (this.scrollableHeaderRow && this.frozenHeaderRow) {
+      let sh = this.scrollableHeaderRow.nativeElement.offsetHeight; //.clientHeight ?
+      this.frozenHeaderRow.nativeElement.style.height = sh + 'px';
+    }
   }
 
   private sdev(rows: any[]): { value: number, count: number, mean: number }[] {
@@ -99,7 +117,7 @@ export class TermsheetComponent implements OnInit {
       }
     });
     //
-    let ret: { value: number, count: number, mean: number  }[] = [];
+    let ret: { value: number, count: number, mean: number }[] = [];
     for (var sid in students) {
       let sData = students[sid];
       let sum = sData.sum.value();
@@ -119,7 +137,7 @@ export class TermsheetComponent implements OnInit {
   }
 
   gradeChange(rec: string, stud: string, val: GradeValue) {
-    if (val && val.id) this.service.setGrade(rec, stud, val.id);
+    if (val && val.id) this.records.setGrade(rec, stud, val.id);
   }
 
   /*   exportPdf() {
@@ -161,4 +179,5 @@ export class TermsheetComponent implements OnInit {
     if (li !== 0 && max - li < 8) ret = ret.substring(0, li);
     return `${ret} …`;
   };
+
 }

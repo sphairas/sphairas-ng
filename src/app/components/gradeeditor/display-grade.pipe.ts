@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { ConventionsService } from '../conventions.service';
+import { ConventionsService } from 'src/app/conventions.service';
 
 @Pipe({
   name: 'displayGrade'

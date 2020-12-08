@@ -21,6 +21,10 @@
         <a [routerLink]="['termsheet', 'dummy']">dummy</a>
     </div>
 
+    <div *ngFor="let file of files | async">
+        <a [routerLink]="[file.value.type, file.key]">{{file.value.name}}</a>
+    </div>
+
     <button mat-raised-button primary (click)="logout()" color="primary">Abmelden
     </button>
 

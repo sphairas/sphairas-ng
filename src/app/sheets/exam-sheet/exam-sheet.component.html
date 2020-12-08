@@ -1,49 +1,186 @@
-
 <div class="page-content" style="height: calc(70vh - 10px)">
+    Count: {{count | async}}
+    <div *ngIf="data | async as table; else loading" class="content-section implementation">
+        
+        <p-dialog appendTo="body" position="top-left" [baseZIndex]="10000" [style]="{width: '27vw'}"
+            [(visible)]="display">
+            <p-header>
+                Verteilung
+            </p-header>
+            Placeholder for charts
+        </p-dialog>
 
-    <p-table [scrollable]="true" scrollHeight="flex" [value]="data">
-        <ng-template pTemplate="colgroup">
-            <colgroup>
-                <col style="width: 110px;" />
-            </colgroup>
-            <colgroup>
-                <col *ngFor="let col of keys" style="width: 45px;" />
-            </colgroup> 
-            <colgroup>
-                <col style="width: 45px;" />
-            </colgroup>
-            <colgroup>
-                <col style="width: 65px;" />
-            </colgroup>
-        </ng-template>
-        <ng-template pTemplate="header">
-            <tr>
-                <th style="text-align: start;">Name</th>
-                <th *ngFor="let col of keys" style="padding-top: 0.571em; overflow: visible;">
-                    <span>{{col.name}}</span>
-                    <br>
-                    <span style="font-size: x-small;">{{col['max-value']}}</span>
-                </th>
-                <th style="text-align: start;">Summe</th>
-                <th style="text-align: start;">Note</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-row>
-            <tr>
-                <td>
-                    {{row.name}}
-                </td>
-                <td *ngFor="let col of keys" style="text-align: center; vertical-align: middle;">
-                    {{row.records[col.id]}}
-                </td>
-                <td>
-                    {{sum(row)}}
-                </td>
-                <td pEditableColumn style="text-align: center; vertical-align: middle;">
-                    <grade-editor [value]="{id: row.grade, editable: true}" (valueChange)="gradeChange(row.id, $event)">
-                    </grade-editor>
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
+        <p-table [scrollable]="true" scrollHeight="flex" [value]="table.records" dataKey="id" class="records-table">
+            <ng-template pTemplate="colgroup">
+                <colgroup>
+                    <col style="width: 1rem" />
+                </colgroup>
+                <colgroup>
+                    <col style="width: 110px;" />
+                </colgroup>
+                <colgroup>
+                    <col *ngFor="let col of table.keys" style="width: 45px;" />
+                </colgroup>
+                <colgroup>
+                    <col style="width: 45px;" />
+                </colgroup>
+                <colgroup>
+                    <col style="width: 65px;" />
+                </colgroup>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th></th>
+                    <th style="text-align: start;">Name</th>
+                    <th *ngFor="let col of table.keys" class="show-on-hover"
+                        style="overflow: visible; text-align: center; position: relative;">
+                        <span>{{col.name}}</span>
+                        <br>
+                        <span style="font-size: small;">
+                            <input #maxValueInput pInputText pKeyFilter="num" type="text" [(ngModel)]="col['max-value']"
+                                (blur)="maxValueChange(col, maxValueInput.value)"
+                                (keyup.enter)="maxValueChange(col, maxValueInput.value)"
+                                style="width: 100%; border: none; background-color: transparent; color: inherit; font: inherit; text-align: center;">
+                        </span>
+                        <button pButton pRipple type="button" (click)="removeColumn(col.id)" icon="pi pi-trash"
+                            class="shown-on-hover p-button-rounded p-button-text p-button-plain p-button-sm"
+                            style="position: absolute; top: -8px; right: -5px;">
+                        </button>
+                    </th>
+                    <th style="overflow: visible; text-align: center; position: relative;" class="show-on-hover">
+                        Summe
+                        <br>
+                        <span style="font-size: small;">
+                            {{table['w-keysSum']}}
+                        </span>
+                        <button pButton pRipple type="button" (click)="addColumn()" icon="pi pi-plus"
+                            class="shown-on-hover"
+                            style="position: absolute; top: 0; left: 0; height: 100%; width: 1.4rem;">
+                        </button>
+                    </th>
+                    <th style="overflow: visible; text-align: center; position: relative;">Note</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-row let-expanded="expanded" let-editing="editing">
+                <tr [ngClass]="{'row-highlighted': row.grade === highlightGrade}">
+                    <td>
+                        <button type="button" pButton pRipple [pRowToggler]="row"
+                            class="p-button p-component p-button-icon-only p-button-text p-button-rounded p-button-plain"
+                            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
+                        </button>
+                    </td>
+                    <td>
+                        {{row.name}}
+                    </td>
+                    <td pEditableColumn *ngFor="let col of table.keys"
+                        style="text-align: center; vertical-align: middle;">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <!-- <p-dropdown [options]="grades" [(ngModel)]="current" appendTo="body"></p-dropdown> -->
+                                <!-- Append-to need to make all drop down list visible https://stackoverflow.com/questions/54346512/dropdown-values-hidden-inside-scrollable-table-header-primeng -->
+                                <!-- appendTo="body" -->
+                                <!-- <input #scoreInput pInputText type="text" [ngModel]="row.records[col.id]"
+                                    (ngModelChange)="scoreValueChange(row.id, col.id, $event)"> -->
+                                <!-- (keydown.enter)="scoreValueChange(row.id, col.id, scoreInput.value)"
+                                    (blur)="scoreValueChange(row.id, col.id, scoreInput.value)"
+                                    (ngSubmit)="scoreValueChange(row.id, col.id, scoreInput.value)" -->
+                                <input #scoreInput pInputText pKeyFilter="pnum" type="number" min="0" step="0.5"
+                                    [(ngModel)]="row.records[col.id]" l10nDecimal digits="1.0-2"
+                                    (blur)="scoreValueChange(row.id, col.id, scoreInput.value)"
+                                    style="width: 100%; text-align: center;">
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                <span>
+                                    {{row.records[col.id] | number: '1.0-2'}}
+                                </span>
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td style="text-align: center; vertical-align: middle;">
+                        {{row.sum}}
+                    </td>
+                    <td pEditableColumn style="text-align: center; vertical-align: middle; position: relative;">
+                        <i class="pi pi-lock" style="position: absolute; top: 0; right: 2px;"></i>
+                        <grade-editor [value]="{id: row.grade, editable: true}"
+                            (valueChange)="gradeChange(row, $event)">
+                        </grade-editor>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="rowexpansion" let-row>
+                <tr>
+                    <td colspan="7">
+                        <div class="p-p-3">
+                            <span class="p-float-label">
+                                <input #noteInput pInputText type="text" [value]="row.note"
+                                    (keydown.enter)="noteChange(row, noteInput.value)"
+                                    (blur)="noteChange(row, noteInput.value)"
+                                    (ngSubmit)="noteChange(row, noteInput.value)">
+                                <label for="float-input">Bemerkung</label>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="3">Keine Namen.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+        <p-table [scrollable]="true" scrollHeight="flex" [value]="['percentage', 'absolute']">
+            <ng-template pTemplate="colgroup">
+                <colgroup>
+                    <col style="width: 110px;" />
+                </colgroup>
+                <colgroup>
+                    <col *ngFor="let col of table.distribution" style="width: 45px;" />
+                </colgroup>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="text-align: start;">Note</th>
+                    <th *ngFor="let col of table.distribution">
+                        <span>{{conventions.label(col.grade)}}</span>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-type>
+                <tr *ngIf="type === 'percentage'">
+                    <td>
+                        Ab %:
+                    </td>
+                    <td *ngFor="let col of table.distribution" style="text-align: center; vertical-align: middle;">
+                        {{col['floor-fraction'] * 100 | number: '1.0-2' }}
+                    </td>
+                </tr>
+                <tr *ngIf="type === 'absolute'">
+                    <td>
+                        Ab Pkt.:
+                    </td>
+                    <td pEditableColumn *ngFor="let col of table.distribution"
+                        style="text-align: center; vertical-align: middle;">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-inputNumber #floorInput [(ngModel)]="col.floor" mode="decimal" [showButtons]="true"
+                                    buttonLayout="vertical" spinnerMode="vertical"
+                                    decrementButtonClass="p-button-secondary" incrementButtonClass="p-button-secondary"
+                                    incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus"
+                                    (ngModelChange)="distributionChange(table.distribution)" style="width: auto;">
+                                </p-inputNumber>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                <span>
+                                    {{col.floor | number: '1.0-2' }}
+                                </span>
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <ng-template #loading>Lädt...</ng-template>
 </div>

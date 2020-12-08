@@ -116,6 +116,76 @@ export class ConventionsService {
     {
       "grades": [
         {
+          "id": "15",
+          "label": "15"
+        },
+        {
+          "id": "14",
+          "label": "14"
+        },
+        {
+          "id": "13",
+          "label": "13"
+        },
+        {
+          "id": "12",
+          "label": "12"
+        },
+        {
+          "id": "11",
+          "label": "11"
+        },
+        {
+          "id": "10",
+          "label": "10"
+        },
+        {
+          "id": "09",
+          "label": "09"
+        },
+        {
+          "id": "08",
+          "label": "08"
+        },
+        {
+          "id": "07",
+          "label": "07"
+        },
+        {
+          "id": "06",
+          "label": "06"
+        },
+        {
+          "id": "05",
+          "label": "05"
+        },
+        {
+          "id": "04",
+          "label": "04"
+        },
+        {
+          "id": "03",
+          "label": "03"
+        },
+        {
+          "id": "02",
+          "label": "02"
+        },
+        {
+          "id": "01",
+          "label": "01"
+        },
+        {
+          "id": "00",
+          "label": "00"
+        }
+      ],
+      "name": "de.notensystem.os",
+      "display": "Noten"
+    },
+    {
+      "grades": [
+        {
           "id": "pending",
           "label": "?",
           "style": "accent"
@@ -147,6 +217,7 @@ export class ConventionsService {
         let g = cnv.grades.find(g => g.id === res.id);
         if (g) return g.label;
       }
+      return res.id;
     }
     return grade;
   }

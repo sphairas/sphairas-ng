@@ -33,6 +33,15 @@ export class PouchDBService {
     //this.authService.changes.subscribe(e => this.onChange(e)); Not working, this service might be initialized after AuthService
   }
 
+  viewChanges(viewName: string): Observable<any> {
+    return fromEvent(this.localDB.changes({
+      since: 'now',
+      live: true,
+      filter: '_view',
+      view: viewName,
+    }), 'change');
+  }
+
   authChange(change: { type: string }) {
     switch (change.type) {
       case 'login':

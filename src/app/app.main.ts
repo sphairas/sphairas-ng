@@ -21,7 +21,6 @@ export class AppMainComponent {
   pageId: string;
   isStarting = true;
   isTransitioning = true;
-  hasFloatingToc = false;
   isSideBySide = true; //false;
   isFetching = false;
   private isSideNavDoc = true;//false;

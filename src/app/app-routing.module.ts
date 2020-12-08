@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { TermsheetComponent } from './termsheets/termsheet/termsheet.component';
 import { AuthGuardService } from './authguard.service';
 import { AppMainComponent } from './app.main';
+import { ExamSheetComponent } from './sheets/exam-sheet/exam-sheet.component';
+import { RecordsSheetComponent } from './sheets/records-sheet/records-sheet.component';
 
 const routes: Routes = [
   {
@@ -15,8 +16,12 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
     children: [
       {
-        path: 'termsheet/:document',
-        component: TermsheetComponent,
+        path: 'records-sheet/:file',
+        component: RecordsSheetComponent,
+      },
+      {
+        path: 'student-sheet/:file',
+        component: ExamSheetComponent,
       }
     ]
   },

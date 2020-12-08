@@ -35,9 +35,9 @@
   (resultSelected)="hideSearchResults()">
 </aio-search-results> -->
 
-<mat-sidenav-container class="sidenav-container" [class.starting]="isStarting" [class.has-floating-toc]="hasFloatingToc" role="main">
+<mat-sidenav-container class="sidenav-container" [class.starting]="isStarting" role="main">
 
-    <mat-sidenav [ngClass]="{'collapsed': !isSideBySide}" #sidenav class="sidenav" [mode]="mode" [opened]="isOpened"
+    <mat-sidenav [ngClass]="{'collapsed': !isSideBySide}" #sidenav class="sidenav no-print" [mode]="mode" [opened]="isOpened"
         (openedChange)="updateHostClasses()">
         <!-- <aio-nav-menu *ngIf="!isSideBySide" [nodes]="topMenuNarrowNodes" [currentNode]="currentNodes?.TopBarNarrow"
       [isWide]="false"></aio-nav-menu>
@@ -57,12 +57,8 @@
     </aio-doc-viewer>
     <aio-dt *ngIf="dtOn" [(doc)]="currentDocument"></aio-dt> -->
 
-
         <!-- <app-config></app-config> -->
         <!-- Highlight Card -->
-        <div class="card highlight-card card-small">
-            <span>{{ title }} app is running!</span>
-        </div>
 
         <div>
             <router-outlet></router-outlet>
@@ -71,10 +67,6 @@
     </main>
 
 </mat-sidenav-container>
-
-<!-- <div *ngIf="hasFloatingToc" class="toc-container no-print" [style.max-height.px]="tocMaxHeight" (wheel)="restrainScrolling($event)">
-  <aio-lazy-ce selector="aio-toc"></aio-lazy-ce>
-</div> -->
 
 <footer class="no-print">
     <!-- <aio-footer [nodes]="footerNodes" [versionInfo]="versionInfo"></aio-footer> -->

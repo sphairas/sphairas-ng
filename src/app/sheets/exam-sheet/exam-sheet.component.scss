@@ -1,0 +1,19 @@
+:host ::ng-deep .records-table .p-datatable .p-datatable-tbody  > tr > td {
+    padding: 0;
+}
+
+:host ::ng-deep input.p-inputnumber-input.p-inputtext.p-component {
+    width: 100%;
+}
+
+.shown-on-hover {
+    visibility: hidden;
+}
+
+.show-on-hover:hover .shown-on-hover {
+    visibility: visible;
+}
+
+p-table .row-highlighted {
+    background-color: burlywood;
+}

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/auth.service';
 import { BaseTargetDocument } from '../base-target-document';
+import { FilesService } from 'src/app/files.service';
 
 export const categories: any[] = [
   {
@@ -27,14 +28,15 @@ export class CoursesMenuComponent implements OnInit {
 
   lessons: Observable<BaseTargetDocument[]>;
   categories: any[];
+  files: Observable<any[]>;
 
-  constructor(private service: LessonsService, private router: Router, private authService: AuthService) {
-    this.lessons = this.service.getCourses();
+  constructor(private service: LessonsService, private filesService: FilesService, private router: Router, private authService: AuthService) {
     this.categories = categories;
   }
 
   ngOnInit(): void {
-    this.service.getCourses();
+    this.lessons = this.service.getCourses();
+    this.files = this.filesService.files();
   }
 
   logout() {

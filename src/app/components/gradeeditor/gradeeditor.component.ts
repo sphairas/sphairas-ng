@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
-import { GradeValue } from '../gradevalue';
+import { GradeValue } from 'src/app/types/gradevalue';
 import { SelectItem } from 'primeng/api';
 import { ConventionsService } from 'src/app/conventions.service';
 

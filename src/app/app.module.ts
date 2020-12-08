@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { TermSheetsModule } from './termsheets/termsheets.module';
+import { SheetsModule } from './sheets/sheets.module';
 import { AppMainComponent } from './app.main';
 import { LessonsModule } from './lessons/lessons.module';
 
@@ -35,7 +35,7 @@ registerLocaleData(localeDe, 'de');
     HttpClientModule,
     AppRoutingModule,
     LessonsModule,
-    TermSheetsModule
+    SheetsModule
   ],
   providers: [
     { provide: LOCALE_ID, useValue: "de" }
