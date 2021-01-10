@@ -117,67 +117,83 @@ export class ConventionsService {
       "grades": [
         {
           "id": "15",
-          "label": "15"
+          "label": "15",
+          "numerical": 15
         },
         {
           "id": "14",
-          "label": "14"
+          "label": "14",
+          "numerical": 14
         },
         {
           "id": "13",
-          "label": "13"
+          "label": "13",
+          "numerical": 13
         },
         {
           "id": "12",
-          "label": "12"
+          "label": "12",
+          "numerical": 12
         },
         {
           "id": "11",
-          "label": "11"
+          "label": "11",
+          "numerical": 11
         },
         {
           "id": "10",
-          "label": "10"
+          "label": "10",
+          "numerical": 10
         },
         {
           "id": "09",
-          "label": "09"
+          "label": "09",
+          "numerical": 9
         },
         {
           "id": "08",
-          "label": "08"
+          "label": "08",
+          "numerical": 8
         },
         {
           "id": "07",
-          "label": "07"
+          "label": "07",
+          "numerical": 7
         },
         {
           "id": "06",
-          "label": "06"
+          "label": "06",
+          "numerical": 6
         },
         {
           "id": "05",
-          "label": "05"
+          "label": "05",
+          "numerical": 5
         },
         {
           "id": "04",
-          "label": "04"
+          "label": "04",
+          "numerical": 4
         },
         {
           "id": "03",
-          "label": "03"
+          "label": "03",
+          "numerical": 3
         },
         {
           "id": "02",
-          "label": "02"
+          "label": "02",
+          "numerical": 2
         },
         {
           "id": "01",
-          "label": "01"
+          "label": "01",
+          "numerical": 1
         },
         {
           "id": "00",
-          "label": "00"
+          "label": "00",
+          "numerical": 0
         }
       ],
       "name": "de.notensystem.os",
