@@ -167,9 +167,11 @@ export class ExamSheetComponent implements OnInit {
     let row: any = data.records.find(r => r.id === id);
     let s = this.stats.streaming.sum();
     for (var key in row.records) {
+      let def = data.keys.find(k => k.id === key);
       let val: number = +row.records[key];
       if (isNaN(val)) continue;
-      s.compute(val);
+      let weighted: number = (def && def.weight) ? val * def.weight : val;
+      s.compute(weighted);
     }
     row.sum = s.value();
     if (!row['fixed-grade']) row.grade = this.distribute(row.sum, data.distribution);
