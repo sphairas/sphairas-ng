@@ -21,7 +21,7 @@
         <a [routerLink]="['termsheet', 'dummy']">dummy</a>
     </div>
 
-    <div *ngFor="let file of files | async">
+    <div *ngFor="let file of files | async" class="sidebar-menu-item">
         <a [routerLink]="[file.value.type, file.key]">{{file.value.name}}</a>
     </div>
 
