@@ -1,6 +1,6 @@
-import { Component, Host, Input, OnInit, SimpleChanges } from '@angular/core';
-import { combineLatest, merge, Observable, of, zip } from 'rxjs';
-import { map, shareReplay, switchMap } from 'rxjs/operators';
+import { Component, Input, OnInit } from '@angular/core';
+import { combineLatest, Observable, of } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
 import { ConventionsService } from 'src/app/conventions.service';
 import { FilesService } from 'src/app/files.service';
 import { TermSheetService } from './term-sheet.service';
@@ -22,7 +22,7 @@ export class AverageValueComponent implements OnInit {
 
   readonly stats = require('wink-statistics');
 
-  constructor(private files: FilesService, private conventions: ConventionsService, private ts: TermSheetService) { }
+  constructor(private files: FilesService, private conventions: ConventionsService, private service: TermSheetService) { }
 
   ngOnInit(): void {
     let arr: Observable<{ grade: string, weight: number }>[] = [];

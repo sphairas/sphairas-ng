@@ -15,24 +15,20 @@ export class ReferencedValueComponent implements OnInit {
   @Input()
   student: string;
   data: Observable<any>;
-  text: string;
 
   constructor(private files: FilesService) {
   }
 
   ngOnInit(): void {
     this.data = this.files.file(this.ref.doc).pipe(
-      tap(t => {if(!t) console.log("NO T")}),
-      map(f => { return this.findValue(f) }),
-      tap(t => this.text = 'FOUND' + JSON.stringify(t)),
+      map(f => { return ReferencedValueComponent.findValue(f, this.student) }),
       shareReplay(1)//Does the magic to update without cdr.detectChanges();
     );
   }
 
- findValue(data: any): string {
-    console.log(JSON.stringify(this.ref) + ' ' + this.student)
-    let record = data.records.find(r => r.id === this.student);
-    console.log(JSON.stringify(record));
-    return record ? record.grade : '???';
+  public static findValue(file: any, student: string): string {
+    let record = file.records.find(r => r.id === student);
+    return record ? record.grade : '---';
   }
+
 }

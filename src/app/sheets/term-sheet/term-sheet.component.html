@@ -4,6 +4,11 @@
 
         <p-table [scrollable]="true" scrollHeight="flex" [value]="table.students" dataKey="id" class="records-table">
 
+            <ng-template pTemplate="caption">
+                <div class="p-d-flex">
+                    <term-sheet-export-pdf></term-sheet-export-pdf>
+                </div>
+            </ng-template>
             <ng-template pTemplate="colgroup">
                 <colgroup>
                     <col style="width: 1rem" />
