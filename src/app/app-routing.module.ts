@@ -4,6 +4,7 @@ import { AuthGuardService } from './authguard.service';
 import { AppMainComponent } from './app.main';
 import { ExamSheetComponent } from './sheets/exam-sheet/exam-sheet.component';
 import { RecordsSheetComponent } from './sheets/records-sheet/records-sheet.component';
+import { TermSheetComponent } from './sheets/term-sheet/term-sheet.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,10 @@ const routes: Routes = [
       {
         path: 'student-sheet/:file',
         component: ExamSheetComponent,
+      },
+      {
+        path: 'term-sheet/:file',
+        component: TermSheetComponent,
       }
     ]
   },

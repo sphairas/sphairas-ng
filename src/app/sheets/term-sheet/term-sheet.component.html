@@ -1,0 +1,77 @@
+<div class="page-content" style="height: calc(70vh - 10px)">
+    Count: {{count | async}}
+    <div *ngIf="data | async as table; else loading" class="content-section implementation">
+
+        <p-table [scrollable]="true" scrollHeight="flex" [value]="table.students" dataKey="id" class="records-table">
+
+            <ng-template pTemplate="colgroup">
+                <colgroup>
+                    <col style="width: 1rem" />
+                </colgroup>
+                <colgroup>
+                    <col style="width: 110px;" />
+                </colgroup>
+                <colgroup>
+                    <col *ngFor="let col of table.keys" style="width: 45px;" />
+                </colgroup>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th></th>
+                    <th style="text-align: start;">Name</th>
+                    <th *ngFor="let col of table.keys" class="show-on-hover"
+                        style="overflow: visible; text-align: center; position: relative;">
+                        <span>{{col.id}} {{col.name}}</span>
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-row let-expanded="expanded" let-editing="editing">
+                <tr>
+                    <td>
+                        <button type="button" pButton pRipple [pRowToggler]="row"
+                            class="p-button p-component p-button-icon-only p-button-text p-button-rounded p-button-plain"
+                            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
+                        </button>
+                    </td>
+                    <td>
+                        {{row.name}}
+                    </td>
+                    <td pEditableColumn *ngFor="let col of table.keys"
+                        style="text-align: center; vertical-align: middle; position: relative;">
+                        <grade-editor *ngIf="col.values" [value]="col | findGrade: row.id"
+                            (valueChange)="gradeChange(col, row.id, $event)">
+                        </grade-editor>
+                        <referenced-value *ngIf="col['sheet-document-reference']"
+                            [ref]="col['sheet-document-reference']" [student]="row.id">
+                        </referenced-value>
+                        <average-value *ngIf="col.function && col.function.type === 'average'" [function]="col.function"
+                            [student]="row.id" [keys]="table.keys">
+                        </average-value>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="rowexpansion" let-row>
+                <tr>
+                    <td colspan="7">
+                        <div class="p-p-3">
+                            <span class="p-float-label">
+                                <input #noteInput pInputText type="text" [value]="row.note"
+                                    (keydown.enter)="noteChange(row, noteInput.value)"
+                                    (blur)="noteChange(row, noteInput.value)"
+                                    (ngSubmit)="noteChange(row, noteInput.value)">
+                                <label for="float-input">Bemerkung</label>
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="3">Keine Namen.</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
+    <ng-template #loading>Lädt...</ng-template>
+</div>

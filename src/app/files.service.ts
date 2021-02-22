@@ -48,6 +48,10 @@ export class FilesService {
     );
     return merge(res, changes);
   }
+  
+  public async change(doc: string, d: any) {
+    return this.db.change(doc, d);
+  }
 
   updateScore(file: string, student: string, key: string, value: number): Observable<any> {
     let doc = `file:${file}`;

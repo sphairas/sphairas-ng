@@ -14,6 +14,10 @@ import { RecordsSheetComponent } from './records-sheet/records-sheet.component';
 import { DialogModule } from 'primeng/dialog';
 import { GradesPipe } from './records-sheet/grades.pipe';
 import { DisplayGradePipe } from '../components/gradeeditor/display-grade.pipe';
+import { TermSheetComponent } from './term-sheet/term-sheet.component';
+import { ValuesPipe } from './term-sheet/values-pipe.pipe';
+import { ReferencedValueComponent } from './term-sheet/referenced-value.component';
+import { AverageValueComponent } from './term-sheet/average-value.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +25,11 @@ import { DisplayGradePipe } from '../components/gradeeditor/display-grade.pipe';
     GradeEditorComponent,
     DisplayGradePipe,
     ExamSheetComponent,
-    RecordsSheetComponent
+    RecordsSheetComponent,
+    TermSheetComponent,
+    ValuesPipe,
+    ReferencedValueComponent,
+    AverageValueComponent
   ],
   imports: [
     CommonModule,
