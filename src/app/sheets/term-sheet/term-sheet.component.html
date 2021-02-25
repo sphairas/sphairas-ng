@@ -50,7 +50,7 @@
                             [ref]="col['sheet-document-reference']" [student]="row.id">
                         </referenced-value>
                         <average-value *ngIf="col.function && col.function.type === 'average'" [function]="col.function"
-                            [student]="row.id" [keys]="table.keys">
+                            [student]="row.id">
                         </average-value>
                     </td>
                 </tr>

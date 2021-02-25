@@ -10,6 +10,7 @@ export class TermSheetService {
 
   file: string;
   data: Observable<any>;
+  unfiltered: Observable<any>;
   private _files_doc_rev: string;
 
   readonly stats = require('wink-statistics');
@@ -19,7 +20,8 @@ export class TermSheetService {
   setCurrent(file: string) {
     this.file = file;
     this._files_doc_rev = undefined;
-    this.data = this.files.file(this.file).pipe(
+    this.unfiltered = this.files.file(this.file);
+    this.data = this.unfiltered.pipe(
       filter(t => !this._files_doc_rev || this._files_doc_rev !== t._rev),
       tap(t => {
         // if (this._doc_rev) {

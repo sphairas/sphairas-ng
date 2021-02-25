@@ -48,20 +48,22 @@ export class ExportPdfComponent implements OnInit {
     return this.printing.print(sheet);
   }
 
-  private async resolveGrade(s: any, k: any) {
-    if (k['sheet-document-reference']) {
-      let ref: { doc: string, id: string } = k['sheet-document-reference'];
+  private async resolveGrade(student: any, key: any) {
+    if (key['sheet-document-reference']) {
+      let ref: { doc: string, id: string } = key['sheet-document-reference'];
       return this.files.file(ref.doc).pipe(
-        map(f => { return ReferencedValueComponent.findValue(f, s.id) }),
+        map(f => { return ReferencedValueComponent.findValue(f, student.id) }),
         map(val => { return this.conventions.label(val) || '---' }),
         take(1)
       ).toPromise().then(resolved => {
-        return { column: k.id, value: resolved }
+        return { column: key.id, value: resolved }
       });
+    } else if (key.function && key.function.type === 'average') {
+
     } else {
-      let val = k.values?.find(k => k.id === s.id)?.grade;
+      let val = key.values?.find(k => k.id === student.id)?.grade;
       let resolved = this.conventions.label(val) || '---';
-      return { column: k.id, value: resolved };
+      return { column: key.id, value: resolved };
     }
   }
 
