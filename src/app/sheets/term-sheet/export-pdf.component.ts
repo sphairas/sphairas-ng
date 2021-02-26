@@ -25,7 +25,7 @@ export class ExportPdfComponent implements OnInit {
 
   private async doExportPdf(data: any) {
 
-    let columns: any[] = [{ id: 'name', name: 'Schüler/Schülerin' }, ...data.keys, { id: 'note', name: 'Bemerkung' }];
+    let columns: any[] = [{ id: 'name', name: 'Schüler/Schülerin' }, ...data.keys, { id: 'note', name: 'Bemerkung' }]; //TODO: remove spread operator, security
     columns.forEach(c => {
       if (!c.name) c.name = c.id;
       if (c.id !== 'name' && c.id !== 'note') c.orientation = 'vertical';
@@ -43,8 +43,19 @@ export class ExportPdfComponent implements OnInit {
       header: data.name,
       columns: columns,
       rows: await Promise.all(rows),
-      version: data.file
+      version: data.file,
+      footnotes: []
     };
+
+    let index: number = 1;
+    columns.forEach(c => {
+      if (c.function && c.function.type === 'average') {
+        let f: { type: string, references: { 'referenced-key': string, weight: number }[] } = c.function;
+        let text = f.references.map(r => columns.find(c => c.id === r['referenced-key']).name + ": " + (r.weight * 100).toLocaleString('de-DE', { maximumFractionDigits: 2 }) + "%").join(", ");
+        c.footnotes = [index];
+        sheet.footnotes.push({ id: index++, value: text });
+      }
+    });
     return this.printing.print(sheet);
   }
 
