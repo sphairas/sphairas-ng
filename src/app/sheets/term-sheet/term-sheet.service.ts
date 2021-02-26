@@ -1,21 +1,25 @@
 import { Injectable } from '@angular/core';
-import { from } from 'rxjs';
+import { combineLatest, from } from 'rxjs';
 import { Observable } from 'rxjs';
-import { filter, shareReplay, take, tap } from 'rxjs/operators';
+import { filter, map, shareReplay, take, tap } from 'rxjs/operators';
+import { ConventionsService } from 'src/app/conventions.service';
 import { FilesService } from 'src/app/files.service';
 import { GradeValue } from 'src/app/types/gradevalue';
+
+
+require('events').EventEmitter.defaultMaxListeners = 50;
 
 @Injectable()
 export class TermSheetService {
 
   file: string;
   data: Observable<any>;
-  unfiltered: Observable<any>;
+  private unfiltered: Observable<any>;
   private _files_doc_rev: string;
 
   readonly stats = require('wink-statistics');
 
-  constructor(private files: FilesService) { }
+  constructor(private files: FilesService, private conventions: ConventionsService) { }
 
   setCurrent(file: string) {
     this.file = file;
@@ -57,6 +61,45 @@ export class TermSheetService {
     });
     students.sort((s1, s2) => s1.name.localeCompare(s2.name));
     data.students = students;
+  }
+
+  initAverage(data: any, fun: { type: string, references: { 'referenced-key': string, weight: number }[] }, student: string, reduce: (arr: { grade: string, weight: number }[]) => number): Observable<number> {
+    let arr: Observable<{ grade: string, weight: number }>[] = [];
+    fun.references.forEach(r => {
+      let key = data.keys.find(k => k.id === r['referenced-key']);
+      if (!key) throw 'Key not found';
+      let weight: number = r.weight;
+      if (key['sheet-document-reference']) {
+        let ref: { doc: string, id: string } = key['sheet-document-reference'];
+        arr.push(this.findReference(ref.doc, student, weight));
+      } else { //
+        let record = this.unfiltered.pipe(
+          map(d => d.keys.find(k => k.id === key.id)?.values),
+          map(values => values?.find(v => v.id === student)),
+          filter(value => value && value.grade),
+          map(value => { return { grade: value.grade, weight: weight } }),
+          shareReplay(1)
+        );
+        arr.push(record);
+        // let record = key.values.find(v => v.id === this.student);
+        // if (record) arr.push(of({ grade: record.grade, weight: weight }));
+      }
+    });
+    let grades: Observable<any> = combineLatest(arr);
+    return grades.pipe(
+      map(reduce),
+      shareReplay(1)
+    );
+  }
+
+  private findReference(doc: string, student: string, weight: number): Observable<{ grade: string, weight: number }> {
+    return this.files.file(doc).pipe(
+      map(data => {
+        let record = data.records.find(r => r.id === student);
+        return record ? { grade: record.grade, weight: weight } : undefined;
+      }),
+      shareReplay(1)//Does the magic to update without cdr.detectChanges(); //??
+    );
   }
 
   private updateRow(id: string, data: any) {
