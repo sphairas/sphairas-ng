@@ -15,7 +15,7 @@ import { TermSheetService } from './term-sheet.service';
 export class TermSheetComponent implements OnInit {
 
   file: string;
-  data: Observable<any>; // = new Subject();
+  //data: Observable<any>; // = new Subject();
   // records: { grade: string, records: number[], id: string, name: string }[];
   // keys: { id: string, name: string, "max-value": number, weight: number }[];
   // distribution: { floor: number, grade: string }[] = [];
@@ -38,7 +38,19 @@ export class TermSheetComponent implements OnInit {
     this.file = routed;
     this.service.setCurrent(this.file);
     //this.data.next( this.service.data);
-    this.data = this.service.data;
+    //this.data = this.service.data;
+  }
+
+  get data() {
+    return this.service.data;
+  }
+
+  keyNameChange(col: any, value: string) {
+    this.service.keyNameChange(col, value);
+  }
+
+  removeKey(key: string) {
+    this.service.removeKey(key);
   }
 
   scoreValueChange(row: string, col: string, value: number) {

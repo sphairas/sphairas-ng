@@ -37,18 +37,23 @@ export class TermSheetService {
   }
 
   private updateStudents(data: any) {
-    let students: { id: string, name: string, err: boolean }[] = [];
+    let students: { id: string, name: string, note: string, err: boolean }[] = [];
     data.keys.forEach(k => {
       if (k.values && k['sheet-document-reference']) throw "Can't have both values and reference";
       if (k.values) {
         k.values.forEach(v => {
           let stud = students.find(s => s.id === v.id);
-          if (!stud) students.push({ id: v.id, name: v.name, err: false });
+          if (!stud) students.push({ id: v.id, name: v.name, note: undefined, err: false });
           else if (stud.name !== v.name) stud.err = true;
         })
       } else if (k['sheet-document-reference']) {
         //TODO
       }
+    });
+    data.notes?.forEach(note => {
+      let row = students.find(s => s.id === note.student);
+      if (row) row.note = note.text;
+      else students.push({ id: note.student, name: note.student, note: note, err: true });
     });
     students.sort((s1, s2) => s1.name.localeCompare(s2.name));
     data.students = students;
@@ -68,6 +73,27 @@ export class TermSheetService {
     // if (!row['fixed-grade']) row.grade = this.distribute(row.sum, data.distribution);
   }
 
+  keyNameChange(col: any, val: string) {
+    if (!val || val === '') return;
+    col.name = val;
+    this.updateKeyName(this.file, col.id, val)
+      .subscribe(doc => this._files_doc_rev = doc.rev);
+  }
+
+  private updateKeyName(file: string, key: string, value: string): Observable<any> {
+    let doc = `file:${file}`;
+    let ret = this.files.change(doc, d => {
+      let k = d.keys.find(r => r.id === key);
+      if (k) k.name = value;
+      return d;
+    });
+    return from(ret);
+  }
+
+  removeKey(key: string) {
+    //remove key from average
+  }
+
   scoreValueChange(row: string, col: string, value: number) {
     // if (!text) return;
     // let value: number = +text;
@@ -76,27 +102,32 @@ export class TermSheetService {
     //https://stackoverflow.com/questions/40165294/access-multiple-viewchildren-using-viewchild
     //moveToNextCell in class EditableColumn 
     //https://github.com/primefaces/primeng/blob/6a44036b7e97080f0ee035b96650e83d75e39b82/src/app/components/table/table.ts 
-    this.files.updateScore(this.file, row, col, value)
+    this.updateScore(row, col, value)
       .subscribe(doc => this._files_doc_rev = doc.rev);
     this.data.pipe(take(1)).subscribe(d => this.updateRow(row, d));
+  }
+
+  private updateScore(student: string, key: string, value: number): Observable<any> {
+    let doc = `file:${this.file}`;
+    let ret = this.files.change(doc, d => {
+      let entry = d.records.find(r => r.id === student);
+      if (entry && entry.records) {
+        entry.records[key] = value;
+      }
+      return d;
+    });
+    return from(ret);
   }
 
   gradeChange(col: any, student: string, val: GradeValue) {
     if (!val || !val.id) return;
     col.values.find(v => v.id === student).grade = val.id;
-    this.updateTermGrade(this.file, col.id, student, val.id)
+    this.updateTermGrade(col.id, student, val.id)
       .subscribe(doc => this._files_doc_rev = doc.rev);
   }
 
-  noteChange(row: any, value: string) {
-    if (!value) return;
-    row.note = value;
-    this.files.updateNote(this.file, row.id, value)
-      .subscribe(doc => this._files_doc_rev = doc.rev);
-  }
-
-  private updateTermGrade(file: string, key: string, student: string, value: string): Observable<any> {
-    let doc = `file:${file}`;
+  private updateTermGrade(key: string, student: string, value: string): Observable<any> {
+    let doc = `file:${this.file}`;
     let ret = this.files.change(doc, d => {
       let k = d.keys.find(r => r.id === key);
       if (k && k.values) {
@@ -110,4 +141,26 @@ export class TermSheetService {
     return from(ret);
   }
 
+  noteChange(row: any, value: string) {
+    if (!value || value === row.note) return;
+    row.note = value;
+    this.updateNote(row.id, value)
+      .subscribe(doc => this._files_doc_rev = doc.rev);
+  }
+
+  updateNote(student: string, text: string): Observable<any> {
+    let doc = `file:${this.file}`;
+    let ret = this.files.change(doc, d => {
+      if (!d.notes) d.notes = [];
+      let note = d.notes.find(n => n.student === student);
+      if (note) {
+        note.text = text;
+      } else {
+        note = { student: student, text: text };
+        d.notes.push(note);
+      }
+      return d;
+    });
+    return from(ret);
+  }
 }

@@ -17,3 +17,16 @@
 p-table .row-highlighted {
     background-color: burlywood;
 }
+
+.student-note-input {
+    width: 96%;
+    border: none;
+    margin: 8px 0px 22px 8px;
+    padding: 5px;
+    font-size: initial;
+    background: #f4f4f4;
+}
+
+.student-note-input:focus {
+    outline: none;
+}

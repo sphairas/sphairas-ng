@@ -53,6 +53,7 @@ export class FilesService {
     return this.db.change(doc, d);
   }
 
+  //TODO: remove
   updateScore(file: string, student: string, key: string, value: number): Observable<any> {
     let doc = `file:${file}`;
     let ret = this.db.change(doc, d => {
@@ -76,7 +77,8 @@ export class FilesService {
     });
     return from(ret);
   }
-
+  
+  //TODO: remove
   updateNote(file: string, student: string, note: string): Observable<any> {
     let doc = `file:${file}`;
     let ret = this.db.change(doc, d => {

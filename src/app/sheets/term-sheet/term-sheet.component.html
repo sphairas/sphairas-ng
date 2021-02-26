@@ -26,7 +26,18 @@
                     <th style="text-align: start;">Name</th>
                     <th *ngFor="let col of table.keys" class="show-on-hover"
                         style="overflow: visible; text-align: center; position: relative;">
-                        <span>{{col.id}} {{col.name}}</span>
+                        <span>
+                            <input #colNameInput pInputText type="text" [(ngModel)]="col.name"
+                                (blur)="keyNameChange(col, colNameInput.value)"
+                                (keyup.enter)="keyNameChange(col, colNameInput.value)"
+                                style="width: 100%; border: none; background-color: transparent; color: inherit; font: inherit; text-align: center;">
+                        </span>
+                        <br>
+                        <span *ngIf="!col.name" style="font-size: small;">{{col.id}}</span>
+                        <button pButton pRipple type="button" (click)="removeKey(col.id)" icon="pi pi-trash"
+                            class="shown-on-hover p-button-rounded p-button-text p-button-plain p-button-sm"
+                            style="position: absolute; top: -8px; right: -5px;">
+                        </button>
                     </th>
                 </tr>
             </ng-template>
@@ -57,15 +68,13 @@
             </ng-template>
             <ng-template pTemplate="rowexpansion" let-row>
                 <tr>
-                    <td colspan="7">
+                    <td></td>
+                    <td colspan="5">
+                        <!-- style="border: none;" -->
                         <div class="p-p-3">
-                            <span class="p-float-label">
-                                <input #noteInput pInputText type="text" [value]="row.note"
-                                    (keydown.enter)="noteChange(row, noteInput.value)"
-                                    (blur)="noteChange(row, noteInput.value)"
-                                    (ngSubmit)="noteChange(row, noteInput.value)">
-                                <label for="float-input">Bemerkung</label>
-                            </span>
+                            <input #noteInput pInputText type="text" [value]="row.note || ''" placeholder="Bemerkung" class="student-note-input"
+                                (keydown.enter)="noteChange(row, noteInput.value)"
+                                (blur)="noteChange(row, noteInput.value)" (ngSubmit)="noteChange(row, noteInput.value)">
                         </div>
                     </td>
                 </tr>
