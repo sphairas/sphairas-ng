@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { filter, map, take, tap } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { ConventionsService } from 'src/app/conventions.service';
 import { FilesService } from 'src/app/files.service';
 import { PrintService } from 'src/app/print.service';
@@ -32,7 +32,7 @@ export class ExportPdfComponent implements OnInit {
       if (c.id !== 'name' && c.id !== 'note') c.orientation = 'vertical';
     });
     let rows: Promise<any>[] = data.students.map(s => {
-      let all: Promise<any>[] = data.keys.map(k => this.resolveGrade(s, k, data));
+      let all: Promise<any>[] = data.keys.map(k => this.resolveGrade(s.id, k, data));
       return Promise.all(all).then(scores => {
         let ret = { values: [{ id: s.id, column: 'name', value: s.name }, ...scores] }
         let n = data.notes?.find(n => n.student === s.id)?.text;
@@ -61,27 +61,25 @@ export class ExportPdfComponent implements OnInit {
     return this.printing.print(sheet);
   }
 
-  private async resolveGrade(student: any, key: any, data: any) {
+  private async resolveGrade(student: string, key: any, data: any) {
     if (key['sheet-document-reference']) {
       let ref: { doc: string, id: string } = key['sheet-document-reference'];
       return this.files.file(ref.doc).pipe(
-        map(f => { return ReferencedValueComponent.findValue(f, student.id) }),
+        map(f => { return ReferencedValueComponent.findValue(f, student) }),
         map(val => { return this.conventions.label(val) || '---' }),
         take(1)
       ).toPromise().then(resolved => {
         return { column: key.id, value: resolved }
       });
     } else if (key.function && key.function.type === 'average') {
-      //Wird nicht aufgelöst
       return this.service.initAverage(data, key.function, student, (arr: { grade: string, weight: number }[]) => weightedSum(arr, (grade: string) => this.conventions.numerical(grade))).pipe(
-        filter<number>(Boolean),
         take(1)
       ).toPromise().then(avg => {
-        console.log(avg);
-        return { column: key.id, value: avg?.toLocaleString('de-DE', { maximumFractionDigits: 2 }) };
+        //console.log(avg);
+        return { column: key.id, value: avg.toLocaleString('de-DE', { maximumFractionDigits: 2 }) };
       });
     } else {
-      let val = key.values?.find(k => k.id === student.id)?.grade;
+      let val = key.values?.find(k => k.id === student)?.grade;
       let resolved = this.conventions.label(val) || '---';
       return { column: key.id, value: resolved };
     }

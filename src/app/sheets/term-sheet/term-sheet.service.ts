@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { combineLatest, from } from 'rxjs';
+import { combineLatest, from, of } from 'rxjs';
 import { Observable } from 'rxjs';
 import { filter, map, shareReplay, take, tap } from 'rxjs/operators';
 import { ConventionsService } from 'src/app/conventions.service';
@@ -81,8 +81,6 @@ export class TermSheetService {
           shareReplay(1)
         );
         arr.push(record);
-        // let record = key.values.find(v => v.id === this.student);
-        // if (record) arr.push(of({ grade: record.grade, weight: weight }));
       }
     });
     let grades: Observable<any> = combineLatest(arr);
