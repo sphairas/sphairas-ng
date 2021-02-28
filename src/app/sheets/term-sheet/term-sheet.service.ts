@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { combineLatest, from, of } from 'rxjs';
 import { Observable } from 'rxjs';
 import { filter, map, shareReplay, take, tap } from 'rxjs/operators';
-import { ConventionsService } from 'src/app/conventions.service';
 import { FilesService } from 'src/app/files.service';
 import { GradeValue } from 'src/app/types/gradevalue';
 
@@ -19,7 +18,7 @@ export class TermSheetService {
 
   readonly stats = require('wink-statistics');
 
-  constructor(private files: FilesService, private conventions: ConventionsService) { }
+  constructor(private files: FilesService) { }
 
   setCurrent(file: string) {
     this.file = file;
