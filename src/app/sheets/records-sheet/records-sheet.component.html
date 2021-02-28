@@ -1,6 +1,6 @@
 <div class="page-content" style="height: calc(80vh - 10px)">
 
-    <div *ngIf="data | async as file; else loading">
+    <div *ngIf="service.data | async as file; else loading">
 
         <div class="content-section introduction">
             <div>
@@ -39,7 +39,7 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="frozenbody" let-row>
-                    <tr>
+                    <tr #frozenRow>
                         <td>
                             <span>{{row.time | amLocale: 'de' | amDateFormat: 'dd., D. MMM'}}</span>
                             <span *ngIf="row.period"> {{row.period}}. Stunde</span>
@@ -49,7 +49,7 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-row>
-                    <tr>
+                    <tr #scrollableRow>
                         <td pEditableColumn *ngFor="let col of table.columns"
                             style="text-align: center; vertical-align: middle;">
                             <!-- {{row.records[col.id]?.id}} -->
@@ -60,21 +60,26 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="frozenfooter" let-row>
-                    <tr>
+                    <tr #scrollableFooter>
                         <td>
-                            Statistik
+                            Bewertungen
+                        </td>
+                    </tr>
+                    <tr #scrollableFooter>
+                        <td>
+                            Wert
                         </td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="footer" let-row>
-                    <tr>
-                        <td *ngFor="let col of table.columns">
-                            {{statistics[col.id]?.value | number: '1.2-2' || '---'}}
-                            <!-- <br>
-                    A: {{statistics[col.id]?.mean | number: '1.2-2' || '---'}} -->
-                            <br>
-                            <span style="font-size: x-small;">Anzahl:
-                                {{statistics[col.id]?.count | number: '1.2-2' || '---'}}</span>
+                    <tr #scrollableFooter>
+                        <td *ngFor="let col of table.columns" style="text-align: center; vertical-align: middle;">
+                            {{(statistics[col.id]?.count | number: '1.0-2') || 0}}
+                        </td>
+                    </tr>
+                    <tr #scrollableFooter>
+                        <td *ngFor="let col of table.columns" style="text-align: center; vertical-align: middle;">
+                            {{(statistics[col.id]?.value | number: '1.2-2') || '---'}}
                         </td>
                     </tr>
                 </ng-template>
