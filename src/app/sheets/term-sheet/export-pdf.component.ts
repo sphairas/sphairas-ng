@@ -35,7 +35,8 @@ export class ExportPdfComponent implements OnInit {
       let all: Promise<any>[] = data.keys.map(k => this.resolveGrade(s.id, k, data));
       return Promise.all(all).then(scores => {
         let ret = { values: [{ id: s.id, column: 'name', value: s.name }, ...scores] }
-        let n = data.notes?.find(n => n.student === s.id)?.text;
+        //let n = data.notes?.find(n => n.student === s.id)?.text;
+        let n = s.note;
         if (n) ret.values.push({ column: 'note', value: n });
         return ret;
       });
