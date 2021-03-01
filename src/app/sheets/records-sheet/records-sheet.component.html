@@ -12,6 +12,11 @@
         <div *ngIf="recdata | async as table" class="content-section implementation">
             <p-table #recTable [columns]="table.columns" [scrollable]="true" scrollHeight="flex" frozenWidth="240px"
                 [value]="table.rows">
+                <ng-template pTemplate="caption">
+                    <div class="p-d-flex">
+                        <records-sheet-export-pdf></records-sheet-export-pdf>
+                    </div>
+                </ng-template>
                 <ng-template pTemplate="frozencolgroup">
                     <colgroup>
                         <col style="width: 240px;" />

@@ -59,7 +59,7 @@ export class ExportPdfComponent implements OnInit {
         sheet.footnotes.push({ id: index++, value: text });
       }
     });
-    return this.printing.print(sheet);
+    return this.printing.print(sheet, 'sheet');
   }
 
   private async resolveGrade(student: string, key: any, data: any) {

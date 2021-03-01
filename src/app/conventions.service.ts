@@ -266,6 +266,21 @@ export class ConventionsService {
     return undefined;
   }
 
+  iconEncoded(grade: string) {
+    if (grade) {
+      let res = this.resolve(grade);
+      let cnv = ConventionsService.conventions.find(c => c.name === res.convention);
+      if (cnv) {
+        let g = cnv.grades.find(g => g.id === res.id);
+        if (g && g.icon) {
+          let svg = this.icons.find(i => i.name === g.icon)?.icon;
+          if (svg) return btoa(svg)
+        }
+      }
+    }
+    return undefined;
+  }
+
   resolve(guid: string): { convention: string, id: string } {
     let i = guid.indexOf('#');
     return {

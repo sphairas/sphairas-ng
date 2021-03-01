@@ -31,9 +31,7 @@ export class RecordsSheetService {
         if (!_.isEqual(this.recsettings, s)) {
           this.recsettings = s;
           this.recdata = this.records.recordsView(this.recsettings).pipe(
-            tap(r => {
-              this.statistics = this.sdev(r.rows);
-            })
+            tap(r => this.statistics = this.sdev(r.rows))
           );
           // .subscribe(res => {
           //   this.reccols2 = res.columns;
@@ -56,7 +54,7 @@ export class RecordsSheetService {
     let students: { sum: any, wsum: any, mean: any }[] = [];
     rows.forEach(r => {
       stdev.reset();
-      for (var sid in r.records) { 
+      for (var sid in r.records) {
         let rec = r.records[sid];
         if (rec.id) {
           let v: number = this.conventions.numerical(rec.id);

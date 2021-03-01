@@ -19,6 +19,7 @@ import { ValuesPipe } from './term-sheet/values-pipe.pipe';
 import { ReferencedValueComponent } from './term-sheet/referenced-value.component';
 import { AverageValueComponent } from './term-sheet/average-value.component';
 import { ExportPdfComponent } from './term-sheet/export-pdf.component';
+import { ExportRecordsPdfComponent } from './records-sheet/export-pdf.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { ExportPdfComponent } from './term-sheet/export-pdf.component';
     ValuesPipe,
     ReferencedValueComponent,
     AverageValueComponent,
-    ExportPdfComponent
+    ExportPdfComponent,
+    ExportRecordsPdfComponent
   ],
   imports: [
     CommonModule,
