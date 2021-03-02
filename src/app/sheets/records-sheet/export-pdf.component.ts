@@ -60,6 +60,7 @@ export class ExportRecordsPdfComponent implements OnInit {
       columns: scols,
       rows: srows,
       version: file.file,
+      legend: 'Legende: f: fehlend, e: entschuldigt'
     };
     return this.printing.print({ journal: journal, sheet: sheet }, 'journal');
   }
