@@ -20,6 +20,7 @@ import { ReferencedValueComponent } from './term-sheet/referenced-value.componen
 import { AverageValueComponent } from './term-sheet/average-value.component';
 import { ExportPdfComponent } from './term-sheet/export-pdf.component';
 import { ExportRecordsPdfComponent } from './records-sheet/export-pdf.component';
+import { ContextMenuModule } from 'primeng/contextmenu';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { ExportRecordsPdfComponent } from './records-sheet/export-pdf.component'
     InputNumberModule,
     ButtonModule,
     KeyFilterModule,
-    DialogModule
+    DialogModule,
+    ContextMenuModule
   ]
 })
 export class SheetsModule { }

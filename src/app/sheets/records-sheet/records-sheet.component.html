@@ -1,4 +1,7 @@
-<div class="page-content" style="height: calc(80vh - 10px)">
+<!-- style="height: calc(80vh - 10px)" -->
+<div class="page-content">
+
+    <p-contextMenu #cm [model]="context"></p-contextMenu>
 
     <div *ngIf="service.data | async as file; else loading">
 
@@ -10,8 +13,10 @@
         </div>
 
         <div *ngIf="recdata | async as table" class="content-section implementation">
-            <p-table #recTable [columns]="table.columns" [scrollable]="true" scrollHeight="flex" frozenWidth="240px"
-                [value]="table.rows">
+            <!-- scrollHeight="flex" set scrollHeight to max  -->
+            <p-table #recTable [columns]="table.columns" [scrollable]="true" scrollHeight="calc(50vh - 10px)"
+                frozenWidth="240px" [value]="table.rows" [(contextMenuSelection)]="selectedRow" [contextMenu]="cm"
+                dataKey="id" [resizableColumns]="true" columnResizeMode="expand" [reorderableColumns]="true">
                 <ng-template pTemplate="caption">
                     <div class="p-d-flex">
                         <records-sheet-export-pdf></records-sheet-export-pdf>
@@ -19,7 +24,8 @@
                 </ng-template>
                 <ng-template pTemplate="frozencolgroup">
                     <colgroup>
-                        <col style="width: 240px;" />
+                        <!-- <col style="width: 3rem" /> -->
+                        <col style="width: 310px;" />
                     </colgroup>
                 </ng-template>
                 <ng-template pTemplate="colgroup">
@@ -30,7 +36,8 @@
                 <ng-template pTemplate="frozenheader">
                     <!-- style="height: 200px;" -->
                     <tr #frozenHeaderRow>
-                        <th style="text-align: start;" class="th-vertical">Stunde</th>
+                        <!-- <th></th> -->
+                        <th pResizableColumn style="text-align: start;" class="th-vertical">Stunde</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="header">
@@ -43,18 +50,30 @@
                         </th>
                     </tr>
                 </ng-template>
+                <!-- let-expanded="expanded" let-editing="editing" row expansion not supported with frozen columns -->
                 <ng-template pTemplate="frozenbody" let-row>
                     <tr #frozenRow>
+                        <!--                         <td>
+                            <button type="button" pButton pRipple [pRowToggler]="row"
+                                class="p-button p-component p-button-icon-only p-button-text p-button-rounded p-button-plain"
+                                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
+                            </button>
+                        </td> -->
                         <td>
-                            <span>{{row.time | amLocale: 'de' | amDateFormat: 'dd., D. MMM'}}</span>
-                            <span *ngIf="row.period"> {{row.period}}. Stunde</span>
-                            <span *ngIf="!row.period"> um {{row.time | amLocale: 'de' | amDateFormat: 'H:mm'}}</span>
-                            <span *ngIf="row.journal" class="sub-header"><br>{{truncate(row.journal, 41)}}</span>
+                            <div [class]="row.journal ? 'time-if-journal' : ''">
+                                <span>{{row.time | amLocale: 'de' | amDateFormat: 'dd., D. MMM'}}</span>
+                                <span *ngIf="row.period"> {{row.period}}. Stunde</span>
+                                <span *ngIf="!row.period"> um {{row.time | amLocale: 'de' | amDateFormat:
+                                    'H:mm'}}</span>
+                                </div>
+                            <div *ngIf="row.journal" style="margin-top: 3px;">
+                                <span class="sub-header">{{truncate(row.journal, 41)}}</span>
+                            </div>
                         </td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-row>
-                    <tr #scrollableRow>
+                    <tr #scrollableRow [pContextMenuRow]="row">
                         <td pEditableColumn *ngFor="let col of table.columns"
                             style="text-align: center; vertical-align: middle;">
                             <!-- {{row.records[col.id]?.id}} -->
@@ -64,6 +83,16 @@
                         </td>
                     </tr>
                 </ng-template>
+                <!--                 <ng-template pTemplate="rowexpansion" let-row>
+                    <tr>
+                        <td></td>
+                        <td colspan="8">
+                            <div class="p-p-3">
+                                dsfasdfasdf
+                            </div>
+                        </td>
+                    </tr>
+                </ng-template> -->
                 <ng-template pTemplate="frozenfooter" let-row>
                     <tr #scrollableFooter>
                         <td>

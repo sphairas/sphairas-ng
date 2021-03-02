@@ -3,7 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { RecordsService } from 'src/app/records.service';
 import { GradeValue } from 'src/app/types/gradevalue';
 import * as _ from 'lodash';
-import { RecordsSheetService } from './records-sheet.service'; 
+import { RecordsSheetService } from './records-sheet.service';
+import { MenuItem } from 'primeng/api';
 //declare let $: any;
 
 @Component({
@@ -23,6 +24,9 @@ export class RecordsSheetComponent implements OnInit, AfterViewChecked {
   @ViewChildren('frozenFooter') frozenFooters: QueryList<ElementRef>;
   @ViewChildren('scrollableFooter') scrollableFooters: QueryList<ElementRef>;
 
+  selectedRow: any;
+  context: MenuItem[];
+
   constructor(private activatedRoute: ActivatedRoute, public service: RecordsSheetService, private records: RecordsService) {
     this.activatedRoute.paramMap.subscribe(() => this.ngOnInit());
   }
@@ -32,6 +36,15 @@ export class RecordsSheetComponent implements OnInit, AfterViewChecked {
     if (this.file === routed) return;
     this.file = routed;
     this.service.setCurrent(this.file);
+
+    this.context = [
+      { label: 'View', icon: 'pi pi-fw pi-search', command: () => this.test(this.context) },
+      { label: 'Delete', icon: 'pi pi-fw pi-times', command: () => this.test(this.selectedRow) }
+    ];
+  }
+
+  private test(value: any) {
+
   }
 
   ngOnDestroy(): void {
