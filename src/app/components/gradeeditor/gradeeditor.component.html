@@ -35,7 +35,7 @@
         </p-dropdown>
     </ng-template>
     <ng-template pTemplate="output">
-        <mat-icon *ngIf="currentItem?.icon" svgIcon="{{currentItem.icon}}">
+        <mat-icon *ngIf="currentItem?.icon" svgIcon="{{currentItem.icon}}" style="vertical-align: middle;">
         </mat-icon>
         <span *ngIf="!currentItem?.icon">
             {{currentItem?.label || (value?.id | displayGrade) || '---'}}
