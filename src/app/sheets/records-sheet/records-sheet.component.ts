@@ -1,4 +1,4 @@
-import { AfterViewChecked, ChangeDetectorRef, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { RecordsService } from 'src/app/records.service';
 import { GradeValue } from 'src/app/types/gradevalue';
@@ -24,11 +24,14 @@ export class RecordsSheetComponent implements OnInit, AfterViewChecked {
   @ViewChildren('frozenFooter') frozenFooters: QueryList<ElementRef>;
   @ViewChildren('scrollableFooter') scrollableFooters: QueryList<ElementRef>;
 
+  frozenWidth: string;
+
   selectedRow: any;
   context: MenuItem[];
 
   constructor(private activatedRoute: ActivatedRoute, public service: RecordsSheetService, private records: RecordsService) {
     this.activatedRoute.paramMap.subscribe(() => this.ngOnInit());
+    this.setFrozenWidth();
   }
 
   ngOnInit(): void {
@@ -78,6 +81,17 @@ export class RecordsSheetComponent implements OnInit, AfterViewChecked {
     //this.makeRowsSameHeight();
   }
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event?) {
+    this.setFrozenWidth();
+  }
+
+  private setFrozenWidth() {
+    let width = window.innerWidth;
+    if (width < 1000) this.frozenWidth = '50%';
+    else this.frozenWidth = '37%'
+  }
+
   //https://stackblitz.com/edit/angular-primeng-table-frozen-columns-dpsm8l?file=src%2Fapp%2Ftable-scroll-demo.component.ts
   // makeRowsSameHeight() {
   //   setTimeout(() => {
@@ -105,6 +119,11 @@ export class RecordsSheetComponent implements OnInit, AfterViewChecked {
 
   get statistics() {
     return this.service.statistics;
+  }
+
+  journalChange(row: any, value: string) {
+    if(row.journal === value) return;
+    this.service.journalChange(row.id, value);
   }
 
   gradeChange(rec: string, stud: string, val: GradeValue) {

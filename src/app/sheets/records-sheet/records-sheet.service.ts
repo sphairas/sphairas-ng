@@ -110,4 +110,10 @@ export class RecordsSheetService {
     }
     return ret;
   }
+
+  journalChange(id: string, text: string) {
+    this.records.setJournal(id, text)
+      .then(doc => this._files_doc_rev = doc.rev);
+  }
+
 }

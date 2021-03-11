@@ -59,7 +59,7 @@ th .th-vertical {
 }
 
 :host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
-	padding: 0.45rem;
+	padding: 0.35rem;
 }
 
 // :host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
@@ -73,3 +73,16 @@ th .th-vertical {
 // 		top: 99px;
 // 	}
 // }
+
+.journal-editor .journal-editor-input {
+	//color: floralwhite;
+	width: 98%;
+    border: none;
+    font-size: initial;
+    background: #f4f4f4;
+	//overflow: visible;
+}
+
+.journal-editor .journal-editor-input:focus {
+	box-shadow: none;
+}

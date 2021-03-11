@@ -15,8 +15,9 @@
         <div *ngIf="recdata | async as table" class="content-section implementation">
             <!-- scrollHeight="flex" set scrollHeight to max  -->
             <p-table #recTable [columns]="table.columns" [scrollable]="true" scrollHeight="calc(50vh - 10px)"
-                frozenWidth="240px" [value]="table.rows" [(contextMenuSelection)]="selectedRow" [contextMenu]="cm"
-                dataKey="id" [resizableColumns]="true" columnResizeMode="expand" [reorderableColumns]="true">
+                [frozenWidth]="frozenWidth" [value]="table.rows" [(contextMenuSelection)]="selectedRow"
+                [contextMenu]="cm" dataKey="id" [resizableColumns]="true" columnResizeMode="expand"
+                [reorderableColumns]="true">
                 <ng-template pTemplate="caption">
                     <div class="p-d-flex">
                         <records-sheet-export-pdf></records-sheet-export-pdf>
@@ -25,12 +26,12 @@
                 <ng-template pTemplate="frozencolgroup">
                     <colgroup>
                         <!-- <col style="width: 3rem" /> -->
-                        <col style="width: 310px;" />
+                        <col style="width: 100%;" />
                     </colgroup>
                 </ng-template>
                 <ng-template pTemplate="colgroup">
                     <colgroup>
-                        <col *ngFor="let col of table.columns" style="width: 45px;" />
+                        <col *ngFor="let col of table.columns" style="width: 17px;" />
                     </colgroup>
                 </ng-template>
                 <ng-template pTemplate="frozenheader">
@@ -59,16 +60,35 @@
                                 [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'">
                             </button>
                         </td> -->
-                        <td>
-                            <div [class]="row.journal ? 'time-if-journal' : ''">
+                        <td pEditableColumn class="journal-editor">
+                            <ng-template #rowText>
                                 <span>{{row.time | amLocale: 'de' | amDateFormat: 'dd., D. MMM'}}</span>
                                 <span *ngIf="row.period"> {{row.period}}. Stunde</span>
                                 <span *ngIf="!row.period"> um {{row.time | amLocale: 'de' | amDateFormat:
                                     'H:mm'}}</span>
-                                </div>
-                            <div *ngIf="row.journal" style="margin-top: 3px;">
-                                <span class="sub-header">{{truncate(row.journal, 41)}}</span>
-                            </div>
+                            </ng-template>
+                            <p-cellEditor>
+                                <ng-template pTemplate="input">
+                                    <div class="time-if-journal">
+                                        <ng-container [ngTemplateOutlet]="rowText"></ng-container>
+                                    </div>
+                                    <textarea #journalEditorInput pInputTextarea type="text" [value]="row.journal || ''"
+                                        placeholder="Thema" class="journal-editor-input"
+                                        (keydown.enter)="journalChange(row, journalEditorInput.value)"
+                                        (blur)="journalChange(row, journalEditorInput.value)"
+                                        (ngSubmit)="journalChange(row, journalEditorInput.value)"
+                                        style="margin-top: 3px;">
+                                    </textarea>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    <div [class]="row.journal ? 'time-if-journal' : ''">
+                                        <ng-container [ngTemplateOutlet]="rowText"></ng-container>
+                                    </div>
+                                    <div *ngIf="row.journal" style="margin-top: 3px;">
+                                        <span class="sub-header">{{truncate(row.journal, 41)}}</span>
+                                    </div>
+                                </ng-template>
+                            </p-cellEditor>
                         </td>
                     </tr>
                 </ng-template>

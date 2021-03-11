@@ -22,6 +22,8 @@ import { ExportPdfComponent } from './term-sheet/export-pdf.component';
 import { ExportRecordsPdfComponent } from './records-sheet/export-pdf.component';
 import { ContextMenuModule } from 'primeng/contextmenu';
 
+import {InputTextareaModule} from 'primeng/inputtextarea';
+
 @NgModule({
   declarations: [
     GradesPipe,
@@ -48,7 +50,8 @@ import { ContextMenuModule } from 'primeng/contextmenu';
     ButtonModule,
     KeyFilterModule,
     DialogModule,
-    ContextMenuModule
+    ContextMenuModule,
+    InputTextareaModule
   ]
 })
 export class SheetsModule { }

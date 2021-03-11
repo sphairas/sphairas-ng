@@ -218,4 +218,18 @@ export class RecordsService {
       });
   }
 
+  async setJournal(rec: string, value: string) {
+    const cb = (doc: any): void => {
+      let journal: { text: string, timestamp: number } = {
+        text: value,
+        timestamp: Date.now()
+      };
+      doc.journal = journal;
+    };
+    return this.db.change(rec, cb)
+      .then(res => {
+        //this.loadInitialData();
+        return res;
+      });
+  }
 }
