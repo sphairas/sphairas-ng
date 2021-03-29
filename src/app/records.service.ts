@@ -218,6 +218,33 @@ export class RecordsService {
       });
   }
 
+  async replaceGrade(rec: string, studs: string[], matchGrade: string, replaceEmpty: boolean, grade: string) {
+    const cb = (doc: any): void => {
+      if (!doc.records) doc.records = [];
+      studs.forEach(s => {
+        let record = doc.records[s];
+        if (record) {
+          if (record.grade === matchGrade) {
+            record.grade = grade;
+            record.timestamp = Date.now();
+          }
+        } else if(replaceEmpty) {
+          let record: { student: string, grade: string, timestamp: number } = {
+            student: s,
+            grade: grade,
+            timestamp: Date.now()
+          };
+          doc.records.push(record);
+        }
+      });
+    };
+    return this.db.change(rec, cb)
+      .then(res => {
+        //this.loadInitialData();
+        return res;
+      });
+  }
+
   async setJournal(rec: string, value: string) {
     const cb = (doc: any): void => {
       let journal: { text: string, timestamp: number } = {

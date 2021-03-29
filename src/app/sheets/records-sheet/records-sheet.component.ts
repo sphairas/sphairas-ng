@@ -41,13 +41,13 @@ export class RecordsSheetComponent implements OnInit, AfterViewChecked {
     this.service.setCurrent(this.file);
 
     this.context = [
-      { label: 'View', icon: 'pi pi-fw pi-search', command: () => this.test(this.context) },
-      { label: 'Delete', icon: 'pi pi-fw pi-times', command: () => this.test(this.selectedRow) }
+      { label: 'Alle Entfall', icon: 'pi pi-fw pi-ellipsis-h', command: () => this.setAllEntfall() }
     ];
   }
 
-  private test(value: any) {
-
+  private setAllEntfall() {
+    let studs: string[] = Object.keys(this.selectedRow.records);
+    this.records.replaceGrade(this.selectedRow.id, studs, 'niedersachsen.ersatzeintrag#pending', true, 'mitarbeit#entfall');
   }
 
   ngOnDestroy(): void {
@@ -122,7 +122,7 @@ export class RecordsSheetComponent implements OnInit, AfterViewChecked {
   }
 
   journalChange(row: any, value: string) {
-    if(row.journal === value) return;
+    if (row.journal === value) return;
     this.service.journalChange(row.id, value);
   }
 
