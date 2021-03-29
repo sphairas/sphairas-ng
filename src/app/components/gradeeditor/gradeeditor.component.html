@@ -16,7 +16,7 @@
         <!-- <p-dropdown [options]="grades" [(ngModel)]="current" appendTo="body"></p-dropdown> -->
         <!-- Append-to need to make all drop down list visible https://stackoverflow.com/questions/54346512/dropdown-values-hidden-inside-scrollable-table-header-primeng -->
         <!-- appendTo="body" -->
-        <p-dropdown [options]="grades" [(ngModel)]="current">
+        <p-dropdown [options]="grades" [(ngModel)]="current" appendTo="body">
             <ng-template let-item pTemplate="selectedItem">
                 <mat-icon *ngIf="item.icon" svgIcon="{{item.icon}}">
                 </mat-icon>
