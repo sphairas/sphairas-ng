@@ -63,7 +63,7 @@
                         <td pEditableColumn class="journal-editor">
                             <ng-template #rowText>
                                 <span>{{row.time | amLocale: 'de' | amDateFormat: 'dd., D. MMM'}}</span>
-                                <span *ngIf="row.period"> {{row.period}}. Stunde</span>
+                                <span *ngIf="row.period">, {{row.period}}. Stunde</span>
                                 <span *ngIf="!row.period"> um {{row.time | amLocale: 'de' | amDateFormat:
                                     'H:mm'}}</span>
                             </ng-template>

@@ -222,7 +222,7 @@ export class RecordsService {
     const cb = (doc: any): void => {
       if (!doc.records) doc.records = [];
       studs.forEach(s => {
-        let record = doc.records[s];
+        let record = doc.records.find(r => r.student === s);
         if (record) {
           if (record.grade === matchGrade) {
             record.grade = grade;

@@ -127,7 +127,7 @@ export class RecordsSheetComponent implements OnInit, AfterViewChecked {
   }
 
   gradeChange(rec: string, stud: string, val: GradeValue) {
-    if (val && val.id) this.records.setGrade(rec, stud, val.id);
+    if (val && val.id) this.service.gradeChange(rec, stud, val.id);
   }
 
   truncate(text: string, max: number) {

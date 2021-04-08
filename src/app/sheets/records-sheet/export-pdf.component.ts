@@ -66,6 +66,7 @@ export class ExportRecordsPdfComponent implements OnInit {
   }
 
   private formatRowTime(r: any) {
-    return r.time.locale('de').format('dd., D. MMM');
+    if (r.period) return r.time.locale('de').format('dd., D. MMM').concat(', ' + r.period + '. Stunde');
+    else return r.time.locale('de').format('dd., D. MMM, H:mm');
   }
 }

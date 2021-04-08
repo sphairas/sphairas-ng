@@ -116,4 +116,8 @@ export class RecordsSheetService {
       .then(doc => this._files_doc_rev = doc.rev);
   }
 
+  gradeChange(rec: string, stud: string, value: string) {
+    this.records.setGrade(rec, stud, value)
+      .then(doc => this._files_doc_rev = doc.rev);
+  }
 }
